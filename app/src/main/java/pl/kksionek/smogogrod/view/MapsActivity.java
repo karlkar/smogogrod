@@ -36,6 +36,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mStationSource = SmogApplication.getAirRetrofitService(getApplicationContext())
                 .getStations("AQI")
                 .subscribeOn(Schedulers.io());
+
+
     }
 
     @Override
@@ -44,6 +46,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         mStationSource
                 .subscribe(stations -> Log.d(TAG, "onMapReady: size " + stations.size()));
+
+        SmogApplication.getAirRetrofitService(getApplicationContext())
+                .getStationDetails(1, 471)
+                .subscribeOn(Schedulers.io())
+                .subscribe(stationDetails -> {
+                    Log.d(TAG, "onMapReady: ok... " + stationDetails.getChartElements().get(0).getChartValueAt(0).getTimestamp());
+                });
+
 //        LatLng sydney = new LatLng(-34, 151);
 //        mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
 //        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
