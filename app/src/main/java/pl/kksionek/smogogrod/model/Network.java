@@ -48,51 +48,38 @@ public class Network {
             Pattern.compile("label: '(.*?)'");
     private static final int LEGIONOWO_STATION_ID = 471;
 
-    Observable<ArrayList<Station>> getStations(@NonNull Context context) {
+    private Network() {
+    }
+
+    static Observable<ArrayList<Station>> getStations(@NonNull Context context) {
         return SmogApplication.getAirRetrofitService(context)
                 .getStations("AQI")
                 .subscribeOn(Schedulers.io());
     }
 
-    Observable<StationDetails> getStationDetails(@NonNull Context context) {
+    static Observable<StationDetails> getStationDetails(@NonNull Context context) {
         return SmogApplication.getAirRetrofitService(context)
                 .getStationDetails(1, LEGIONOWO_STATION_ID)
                 .subscribeOn(Schedulers.io());
     }
 
-    Observable<ArrayList<MarkedPlace>> getMarkedPlaces(@NonNull Context context) {
-        return Observable.fromEmitter(new Action1<Emitter<ArrayList<MarkedPlace>>>() {
-            @Override
-            public void call(Emitter<ArrayList<MarkedPlace>> emitter) {
-                String responseStr;
-                try {
-                    responseStr = getMarkedPlacesSiteSource(context);
-                } catch (IOException e) {
-                    emitter.onError(e);
-                    return;
-                }
+    public static Observable<ArrayList<MarkedPlace>> getMarkedPlaces(@NonNull Context context) {
+        return Observable.fromCallable(() -> getMarkedPlacesArray(context))
+                .subscribeOn(Schedulers.io());
+    }
 
-                Matcher featureMatcher = FEATURE_PATTERN.matcher(responseStr);
-                if (featureMatcher.find()) {
-                    ArrayList<MarkedPlace> places = null;
-                    try {
-                        places = extractPlaces(featureMatcher.group(1));
-                        emitter.onNext(places);
-                        emitter.onCompleted();
-                    } catch (ParseException e) {
-                        emitter.onError(e);
-                        return;
-                    }
-                } else {
-                    emitter.onError(new ParseException("No matches found for all features.", 0));
-                    return;
-                }
-            }
-        }, Emitter.BackpressureMode.DROP);
+    static private ArrayList<MarkedPlace> getMarkedPlacesArray(Context context)
+            throws ParseException, IOException {
+        Matcher featureMatcher = FEATURE_PATTERN.matcher(getMarkedPlacesSiteSource(context));
+        if (featureMatcher.find()) {
+            return extractPlaces(featureMatcher.group(1));
+        } else {
+            throw new ParseException("No matches found for all features.", 0);
+        }
     }
 
     @Nullable
-    private String getMarkedPlacesSiteSource(@NonNull Context context) throws IOException {
+    static private String getMarkedPlacesSiteSource(@NonNull Context context) throws IOException {
         OkHttpClient okHttpClient = SmogApplication.getOkHttpClient(context);
 
         Request req = new Request.Builder()
@@ -108,7 +95,7 @@ public class Network {
         return responseStr;
     }
 
-    private ArrayList<MarkedPlace> extractPlaces(@NonNull String text) throws ParseException {
+    static private ArrayList<MarkedPlace> extractPlaces(@NonNull String text) throws ParseException {
         boolean arrayEnded = false;
         ArrayList<MarkedPlace> places = new ArrayList<>();
         Matcher positionMatcher = POSITION_PATTERN.matcher(text);
@@ -141,7 +128,7 @@ public class Network {
         return places;
     }
 
-    Observable<ResponseBody> sendReport(
+    static Observable<ResponseBody> sendReport(
             @NonNull Context context,
             @NonNull String name,
             @NonNull String desc,
@@ -166,7 +153,7 @@ public class Network {
                 .subscribeOn(Schedulers.io());
     }
 
-    private MultipartBody.Part prepareFilePart(@NonNull String name, @NonNull Uri fileUri) {
+    static private MultipartBody.Part prepareFilePart(@NonNull String name, @NonNull Uri fileUri) {
         File file = new File(fileUri.getPath());
         RequestBody requestFile =
                 RequestBody.create(MediaType.parse(MULTIPART_FORM_DATA), file);
@@ -177,7 +164,7 @@ public class Network {
     }
 
     @NonNull
-    private RequestBody createPartFromString(@NonNull String descriptionString) {
+    static private RequestBody createPartFromString(@NonNull String descriptionString) {
         return RequestBody.create(
                 MediaType.parse(MULTIPART_FORM_DATA), descriptionString);
     }
