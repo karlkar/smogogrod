@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -23,9 +22,10 @@ import pl.kksionek.smogogrod.R;
 import pl.kksionek.smogogrod.data.MarkedPlace;
 import pl.kksionek.smogogrod.model.Network;
 import rx.Emitter;
-import rx.Observable;
+import rx.Single;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.subjects.Subject;
 
 public class MapFragment extends SupportMapFragment {
 
@@ -42,7 +42,7 @@ public class MapFragment extends SupportMapFragment {
 
     private GoogleMap mMap;
     private Subscription mSubscription;
-    private Observable<GoogleMap> mMapReadyObservable;
+    private Single<GoogleMap> mMapReadySignal;
 
     private void showOnMap(ArrayList<MarkedPlace> markedPlaces) {
         for (MarkedPlace place : markedPlaces) {
@@ -109,15 +109,14 @@ public class MapFragment extends SupportMapFragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        mMapReadyObservable = Observable.<GoogleMap>fromEmitter(objectEmitter -> {
+        mMapReadySignal = Single.<GoogleMap>fromEmitter(objectEmitter -> {
             OnMapReadyCallback callback = googleMap -> {
-                objectEmitter.onNext(googleMap);
-                objectEmitter.onCompleted();
+                objectEmitter.onSuccess(googleMap);
             };
             getMapAsync(callback);
-        }, Emitter.BackpressureMode.DROP).cache();
+        }).cache();
 
-        mMapReadyObservable
+        mMapReadySignal
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(googleMap -> {
                     mMap = googleMap;
@@ -128,7 +127,7 @@ public class MapFragment extends SupportMapFragment {
                 });
 
         mSubscription = Network.getMarkedPlaces(getContext())
-                .zipWith(mMapReadyObservable, (markedPlaces, googleMap) -> {
+                .zipWith(mMapReadySignal.toObservable(), (markedPlaces, googleMap) -> {
                     mMap = googleMap;
                     return markedPlaces;
                 })
