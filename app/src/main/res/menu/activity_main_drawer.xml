@@ -4,12 +4,15 @@
     <group android:checkableBehavior="single">
         <item
             android:id="@+id/menu_item_status"
+            android:icon="@android:drawable/ic_menu_help"
             android:title="Stan powietrza" />
         <item
             android:id="@+id/menu_item_map"
+            android:icon="@android:drawable/ic_dialog_map"
             android:title="Mapa" />
         <item
             android:id="@+id/menu_item_report"
+            android:icon="@android:drawable/ic_menu_send"
             android:title="Zgłoś truciciela" />
     </group>
 
@@ -17,6 +20,7 @@
         <menu>
             <item
                 android:id="@+id/menu_item_share"
+                android:icon="@drawable/ic_menu_send"
                 android:title="Udostępnij" />
         </menu>
     </item>
