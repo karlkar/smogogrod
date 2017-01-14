@@ -22,6 +22,9 @@ public class Values {
     @SerializedName("O3")
     private float mO3;
 
+    @SerializedName("C6H6")
+    private float mC6h6;
+
     public float getPm10() {
         return mPm10;
     }
@@ -68,5 +71,13 @@ public class Values {
 
     public void setO3(float o3) {
         mO3 = o3;
+    }
+
+    public float getC6h6() {
+        return mC6h6;
+    }
+
+    public void setC6h6(float c6h6) {
+        mC6h6 = c6h6;
     }
 }

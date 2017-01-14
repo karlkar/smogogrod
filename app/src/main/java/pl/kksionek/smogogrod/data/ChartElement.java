@@ -28,15 +28,20 @@ public class ChartElement {
         mKey = key;
     }
 
-    public long getLastTimestamp() {
-        long retVal = 0;
+    public float getLastValue() {
         for (ArrayList<Double> value : mChartValues) {
-            if (value.get(1) != null) {
-                retVal = value.get(0).longValue();
-                continue;
-            }
+            if (value.get(1) != null)
+                return value.get(1).floatValue();
         }
-        return retVal;
+        return 0;
+    }
+
+    public long getLastTimestamp() {
+        for (ArrayList<Double> value : mChartValues) {
+            if (value.get(1) != null)
+                return value.get(0).longValue();
+        }
+        return 0;
     }
 
     public int getChartValuesSize() {

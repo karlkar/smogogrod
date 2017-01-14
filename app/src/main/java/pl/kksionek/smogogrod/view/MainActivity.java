@@ -24,7 +24,7 @@ public class MainActivity extends AppCompatActivity
         if (savedInstanceState == null) {
             getSupportFragmentManager()
                     .beginTransaction()
-                    .replace(R.id.content_main, new ReportFragment())
+                    .replace(R.id.content_main, new StatusFragment())
                     .commit();
         }
 //        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
@@ -44,6 +44,7 @@ public class MainActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+        navigationView.setCheckedItem(R.id.menu_item_status);
     }
 
     @Override
@@ -79,6 +80,7 @@ public class MainActivity extends AppCompatActivity
     public boolean onNavigationItemSelected(MenuItem item) {
         int id = item.getItemId();
 
+        //TODO: Reuse fragments
         if (id == R.id.menu_item_report) {
             getSupportFragmentManager()
                     .beginTransaction()
@@ -90,7 +92,10 @@ public class MainActivity extends AppCompatActivity
                     .replace(R.id.content_main, new MapFragment())
                     .commit();
         } else if (id == R.id.menu_item_status) {
-
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.content_main, new StatusFragment())
+                    .commit();
         } else if (id == R.id.menu_item_share) {
 
         }

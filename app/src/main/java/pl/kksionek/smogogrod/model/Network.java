@@ -51,16 +51,20 @@ public class Network {
     private Network() {
     }
 
-    static Observable<ArrayList<Station>> getStations(@NonNull Context context) {
+    public static Observable<ArrayList<Station>> getStations(@NonNull Context context) {
         return SmogApplication.getAirRetrofitService(context)
                 .getStations("AQI")
                 .subscribeOn(Schedulers.io());
     }
 
-    static Observable<StationDetails> getStationDetails(@NonNull Context context) {
+    public static Observable<StationDetails> getStationDetails(@NonNull Context context, int id) {
         return SmogApplication.getAirRetrofitService(context)
-                .getStationDetails(1, LEGIONOWO_STATION_ID)
+                .getStationDetails(1, id)
                 .subscribeOn(Schedulers.io());
+    }
+
+    public static Observable<StationDetails> getLegionowoStationDetails(@NonNull Context context) {
+        return getStationDetails(context, LEGIONOWO_STATION_ID);
     }
 
     public static Observable<ArrayList<MarkedPlace>> getMarkedPlaces(@NonNull Context context) {
