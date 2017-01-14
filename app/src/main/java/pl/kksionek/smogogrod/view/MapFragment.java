@@ -21,11 +21,9 @@ import java.util.ArrayList;
 import pl.kksionek.smogogrod.R;
 import pl.kksionek.smogogrod.data.MarkedPlace;
 import pl.kksionek.smogogrod.model.Network;
-import rx.Emitter;
 import rx.Single;
-import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.subjects.Subject;
+import rx.subscriptions.CompositeSubscription;
 
 public class MapFragment extends SupportMapFragment {
 
@@ -41,8 +39,8 @@ public class MapFragment extends SupportMapFragment {
 //    }
 
     private GoogleMap mMap;
-    private Subscription mSubscription;
     private Single<GoogleMap> mMapReadySignal;
+    private final CompositeSubscription mSubscriptions = new CompositeSubscription();
 
     private void showOnMap(ArrayList<MarkedPlace> markedPlaces) {
         for (MarkedPlace place : markedPlaces) {
@@ -111,35 +109,33 @@ public class MapFragment extends SupportMapFragment {
         super.onActivityCreated(savedInstanceState);
         mMapReadySignal = Single.<GoogleMap>fromEmitter(objectEmitter -> {
             OnMapReadyCallback callback = googleMap -> {
+                mMap = googleMap;
                 objectEmitter.onSuccess(googleMap);
             };
             getMapAsync(callback);
         }).cache();
 
-        mMapReadySignal
+        mSubscriptions.add(mMapReadySignal
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(googleMap -> {
-                    mMap = googleMap;
+                .subscribe((googleMap) -> {
                     mMap.setInfoWindowAdapter(new MyInfoWindowAdapter(LayoutInflater.from(getContext())));
                     LatLng legionowo = new LatLng(52.3998006, 20.934969);
                     mMap.moveCamera(CameraUpdateFactory.zoomTo(13.0f));
                     mMap.moveCamera(CameraUpdateFactory.newLatLng(legionowo));
-                });
+                }));
 
-        mSubscription = Network.getMarkedPlaces(getContext())
-                .zipWith(mMapReadySignal.toObservable(), (markedPlaces, googleMap) -> {
-                    mMap = googleMap;
-                    return markedPlaces;
-                })
+        mSubscriptions.add(Network.getMarkedPlaces(getContext())
+                .zipWith(mMapReadySignal.toObservable(), (markedPlaces, ignore) -> markedPlaces)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                         markedPlaces -> showOnMap(markedPlaces),
-                        Throwable::printStackTrace);
+                        Throwable::printStackTrace));
     }
 
     @Override
     public void onDestroy() {
-        mSubscription.unsubscribe();
+        mSubscriptions.unsubscribe();
+        mSubscriptions.clear();
         super.onDestroy();
     }
 }
