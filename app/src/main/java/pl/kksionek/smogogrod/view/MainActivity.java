@@ -1,5 +1,9 @@
 package pl.kksionek.smogogrod.view;
 
+import android.content.ActivityNotFoundException;
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -12,7 +16,11 @@ import android.view.MenuItem;
 import pl.kksionek.smogogrod.R;
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+        implements NavigationView.OnNavigationItemSelectedListener, ReportFragment.ReportFragmentListener {
+
+    public static final int REQUEST_IMAGE_CAPTURE = 9876;
+
+    private ReportFragment mReportFragment = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,14 +35,6 @@ public class MainActivity extends AppCompatActivity
                     .replace(R.id.content_main, new StatusFragment())
                     .commit();
         }
-//        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-//        fab.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-//                        .setAction("Action", null).show();
-//            }
-//        });
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -57,24 +57,6 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
-//    @Override
-//    public boolean onCreateOptionsMenu(Menu menu) {
-//        getMenuInflater().inflate(R.menu.main, menu);
-//        return true;
-//    }
-
-//    @Override
-//    public boolean onOptionsItemSelected(MenuItem item) {
-//        int id = item.getItemId();
-//
-//        //noinspection SimplifiableIfStatement
-//        if (id == R.id.action_settings) {
-//            return true;
-//        }
-//
-//        return super.onOptionsItemSelected(item);
-//    }
-
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
@@ -82,9 +64,11 @@ public class MainActivity extends AppCompatActivity
 
         //TODO: Reuse fragments
         if (id == R.id.menu_item_report) {
+            if (mReportFragment == null)
+                mReportFragment = new ReportFragment();
             getSupportFragmentManager()
                     .beginTransaction()
-                    .replace(R.id.content_main, new ReportFragment())
+                    .replace(R.id.content_main, mReportFragment)
                     .commit();
         } else if (id == R.id.menu_item_map) {
             getSupportFragmentManager()
@@ -103,5 +87,24 @@ public class MainActivity extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == REQUEST_IMAGE_CAPTURE) {
+            if (resultCode == RESULT_OK)
+                setImageData(resultCode == RESULT_OK ? data : null);
+            return;
+        }
+        super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    private void setImageData(Intent data) {
+        mReportFragment.setImageData(data);
+    }
+
+    @Override
+    public void onPictureRequested(Intent data) {
+        startActivityForResult(data, REQUEST_IMAGE_CAPTURE);
     }
 }
