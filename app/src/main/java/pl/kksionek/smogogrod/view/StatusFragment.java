@@ -32,7 +32,8 @@ public class StatusFragment extends Fragment {
         Network.getLegionowoStationDetails(getContext())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(statusAdapter::add);
+                .subscribe(statusAdapter::add,
+                        Throwable::printStackTrace);
 
         return view;
     }

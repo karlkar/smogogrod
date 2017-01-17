@@ -1,5 +1,6 @@
 package pl.kksionek.smogogrod.view;
 
+import android.animation.Animator;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -8,6 +9,7 @@ import android.graphics.Bitmap;
 import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
@@ -25,10 +27,14 @@ import android.widget.Toast;
 import java.io.IOException;
 
 import pl.kksionek.smogogrod.R;
+import pl.kksionek.smogogrod.model.Network;
+import rx.android.schedulers.AndroidSchedulers;
 
 import static android.app.Activity.RESULT_OK;
 
 public class ReportFragment extends Fragment {
+
+    private FloatingActionButton mFab;
 
     public interface ReportFragmentListener {
         void onPictureRequested(Intent data);
@@ -48,6 +54,7 @@ public class ReportFragment extends Fragment {
     private Button mBtnReport;
     private Uri mImageUri;
     private ImageView mImage;
+    private View mOverlay;
 
     @Nullable
     @Override
@@ -70,16 +77,79 @@ public class ReportFragment extends Fragment {
         });
         mImage = (ImageView) view.findViewById(R.id.report_image);
 
-        FloatingActionButton fab = (FloatingActionButton) view.findViewById(R.id.fab);
-        fab.setOnClickListener(view1 -> {
+        mOverlay = view.findViewById(R.id.fragment_report_progress_overlay);
+
+        mReportReporterTextView.setText(PreferenceManager.getDefaultSharedPreferences(getContext())
+                .getString("PREF_USERNAME", ""));
+        mReportEMailTextView.setText(PreferenceManager.getDefaultSharedPreferences(getContext())
+                .getString("PREF_EMAIL", ""));
+
+        mFab = (FloatingActionButton) view.findViewById(R.id.fab);
+        mFab.setOnClickListener(view1 -> {
             if (validate()) {
                 Log.d(TAG, "onCreateView: Send data");
+                PreferenceManager.getDefaultSharedPreferences(getContext())
+                        .edit()
+                        .putString("PREF_USERNAME", mReportReporterTextView.getText().toString())
+                        .putString("PREF_EMAIL", mReportEMailTextView.getText().toString())
+                        .apply();
+                showProgressOverlay(true);
+                Network.sendReport(
+                        getContext(),
+                        mReportNameTextView.getText().toString(),
+                        mReportDescTextView.getText().toString(),
+                        mReportCityTextView.getText().toString(),
+                        mReportStreetTextView.getText().toString(),
+                        mReportStreetNumberTextView.getText().toString(),
+                        mReportReporterTextView.getText().toString(),
+                        mReportEMailTextView.getText().toString(),
+                        mImageUri)
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(responseBody -> {
+                                    showProgressOverlay(false);
+                                },
+                                throwable -> {
+                                    showProgressOverlay(false);
+                                    throwable.printStackTrace();
+                                    Toast.makeText(
+                                            getContext(),
+                                            "Problem z połączeniem. Spróbuj ponownie.",
+                                            Toast.LENGTH_SHORT).show();
+                                });
             } else {
                 Toast.makeText(getContext(), "Wypełnij formularz", Toast.LENGTH_SHORT).show();
             }
         });
-
         return view;
+    }
+
+    private void showProgressOverlay(boolean show) {
+        mFab.setEnabled(!show);
+        int duration = getResources().getInteger(android.R.integer.config_shortAnimTime);
+        if (show) {
+            mOverlay.setVisibility(View.VISIBLE);
+            mOverlay.setAlpha(0);
+            mOverlay.animate().alpha(1.0f).setDuration(duration).start();
+        } else {
+            mOverlay.animate()
+                    .alpha(0.0f)
+                    .setDuration(duration)
+                    .setListener(new Animator.AnimatorListener() {
+                @Override
+                public void onAnimationStart(Animator animation) {
+                }
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    mOverlay.setVisibility(View.GONE);
+                }
+                @Override
+                public void onAnimationCancel(Animator animation) {
+                }
+                @Override
+                public void onAnimationRepeat(Animator animation) {
+                }
+            }).start();
+        }
     }
 
     @Override
@@ -108,10 +178,11 @@ public class ReportFragment extends Fragment {
 
         mImage.setRotation(getOrientation(getContext(), mImageUri));
     }
+
     public static int getOrientation(Context context, Uri photoUri) {
         /* it's on the external media. */
         Cursor cursor = context.getContentResolver().query(photoUri,
-                new String[] { MediaStore.Images.ImageColumns.ORIENTATION }, null, null, null);
+                new String[]{MediaStore.Images.ImageColumns.ORIENTATION}, null, null, null);
 
         int result = -1;
         if (null != cursor) {

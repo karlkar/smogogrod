@@ -1,11 +1,13 @@
 package pl.kksionek.smogogrod.model;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.net.Uri;
+import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import java.io.File;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -25,9 +27,7 @@ import pl.kksionek.smogogrod.SmogApplication;
 import pl.kksionek.smogogrod.data.MarkedPlace;
 import pl.kksionek.smogogrod.data.Station;
 import pl.kksionek.smogogrod.data.StationDetails;
-import rx.Emitter;
 import rx.Observable;
-import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 
 public class Network {
@@ -132,7 +132,7 @@ public class Network {
         return places;
     }
 
-    static Observable<ResponseBody> sendReport(
+    public static Observable<ResponseBody> sendReport(
             @NonNull Context context,
             @NonNull String name,
             @NonNull String desc,
@@ -150,21 +150,50 @@ public class Network {
         partMap.put("budynek", createPartFromString(number));
         partMap.put("zglaszajacy", createPartFromString(reporter));
         partMap.put("email", createPartFromString(email));
-
-        MultipartBody.Part filePart = prepareFilePart("zdjecie", fileUri);
-        return SmogApplication.getLegionowoRetrofitService(context)
-                .savePoint(partMap, filePart)
+        return Observable.defer(() -> Observable.just(prepareFilePart(context, "zdjecie", fileUri)))
+                .flatMap(filePart -> SmogApplication.getLegionowoRetrofitService(context)
+                        .savePoint(partMap, filePart)
+                        .subscribeOn(Schedulers.io()))
                 .subscribeOn(Schedulers.io());
     }
 
-    static private MultipartBody.Part prepareFilePart(@NonNull String name, @NonNull Uri fileUri) {
-        File file = new File(fileUri.getPath());
-        RequestBody requestFile =
-                RequestBody.create(MediaType.parse(MULTIPART_FORM_DATA), file);
+    static private MultipartBody.Part prepareFilePart(
+            @NonNull Context context,
+            @NonNull String name,
+            @NonNull Uri fileUri) {
+        try {
+            Bitmap bitmap = MediaStore.Images.Media.getBitmap(context.getContentResolver(), fileUri);
+            boolean higher = bitmap.getWidth() > bitmap.getHeight();
+            int width = bitmap.getWidth(), height = bitmap.getHeight();
+            if (higher) {
+                if (bitmap.getWidth() > 500) {
+                    width = 500;
+                    height /= (bitmap.getWidth() / 500.0f);
+                }
+            } else {
+                if (bitmap.getHeight() > 500) {
+                    height = 500;
+                    width /= (bitmap.getHeight() / 500.0f);
+                }
+            }
+            Bitmap scaled = Bitmap.createScaledBitmap(bitmap, width, height, false);
+            ByteArrayOutputStream stream = new ByteArrayOutputStream();
+            scaled.compress(Bitmap.CompressFormat.PNG, 100, stream);
+            byte[] byteArray = stream.toByteArray();
 
-        MultipartBody.Part body =
-                MultipartBody.Part.createFormData(name, file.getName(), requestFile);
-        return body;
+            RequestBody requestFile = RequestBody.create(
+                    MediaType.parse(MULTIPART_FORM_DATA),
+                    byteArray);
+            MultipartBody.Part body =
+                    MultipartBody.Part.createFormData(
+                            name,
+                            fileUri.getLastPathSegment(),
+                            requestFile);
+            return body;
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     @NonNull
