@@ -3,6 +3,7 @@ package pl.kksionek.smogogrod.view;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.ShareCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -19,6 +20,7 @@ public class MainActivity extends AppCompatActivity
     public static final int REQUEST_IMAGE_PICK = 6789;
 
     private ReportFragment mReportFragment = null;
+    private StatusFragment mStatusFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,12 +76,19 @@ public class MainActivity extends AppCompatActivity
                     .replace(R.id.content_main, new MapFragment())
                     .commit();
         } else if (id == R.id.menu_item_status) {
+            if (mStatusFragment == null)
+                mStatusFragment = new StatusFragment();
             getSupportFragmentManager()
                     .beginTransaction()
-                    .replace(R.id.content_main, new StatusFragment())
+                    .replace(R.id.content_main, mStatusFragment)
                     .commit();
         } else if (id == R.id.menu_item_share) {
-
+            ShareCompat.IntentBuilder
+                    .from(this)
+                    .setText("Aktywnie walczę ze smogiem! Pomaga mi w tym aplikacja Smogogród.")
+                    .setType("text/plain")
+                    .setChooserTitle("Udostępnianie")
+                    .startChooser();
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);

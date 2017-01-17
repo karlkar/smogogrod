@@ -16,7 +16,7 @@
             android:title="Zgłoś truciciela" />
     </group>
 
-    <item android:title="Communicate">
+    <item android:title="Społeczność">
         <menu>
             <item
                 android:id="@+id/menu_item_share"
