@@ -157,7 +157,7 @@
                     android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Zgłaszający (nie będzie widoczne na mapie)"/>
+                    android:text="Zgłaszający (będzie ukryte)"/>
 
             </TableRow>
             <TableRow
