@@ -12,16 +12,21 @@ import android.view.ViewGroup;
 import pl.kksionek.smogogrod.R;
 import pl.kksionek.smogogrod.model.Network;
 import pl.kksionek.smogogrod.model.StatusAdapter;
+import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
 public class StatusFragment extends Fragment {
 
     RecyclerView mRecyclerView;
+    private Subscription mSubscription;
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(
+            LayoutInflater inflater,
+            @Nullable ViewGroup container,
+            @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_status, null);
 
         mRecyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
@@ -29,12 +34,19 @@ public class StatusFragment extends Fragment {
         StatusAdapter statusAdapter = new StatusAdapter();
         mRecyclerView.setAdapter(statusAdapter);
 
-        Network.getLegionowoStationDetails(getContext())
+        mSubscription = Network.getLegionowoStationDetails(getContext())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(statusAdapter::add,
                         Throwable::printStackTrace);
 
         return view;
+    }
+
+    @Override
+    public void onDestroyView() {
+        if (mSubscription != null && !mSubscription.isUnsubscribed())
+            mSubscription.unsubscribe();
+        super.onDestroyView();
     }
 }
