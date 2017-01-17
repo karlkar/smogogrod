@@ -9,9 +9,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import java.util.concurrent.TimeUnit;
+
 import pl.kksionek.smogogrod.R;
 import pl.kksionek.smogogrod.model.Network;
 import pl.kksionek.smogogrod.model.StatusAdapter;
+import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -36,6 +39,12 @@ public class StatusFragment extends Fragment {
 
         mSubscription = Network.getLegionowoStationDetails(getContext())
                 .subscribeOn(Schedulers.io())
+                .retryWhen(errors ->
+                        errors
+                                .zipWith(
+                                        Observable.range(1, 3), (n, i) -> i)
+                                .flatMap(
+                                        retryCount -> Observable.timer(5L * retryCount, TimeUnit.SECONDS)))
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(statusAdapter::add,
                         Throwable::printStackTrace);
