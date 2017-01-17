@@ -16,6 +16,7 @@ public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, ReportFragment.ReportFragmentListener {
 
     public static final int REQUEST_IMAGE_CAPTURE = 9876;
+    public static final int REQUEST_IMAGE_PICK = 6789;
 
     private ReportFragment mReportFragment = null;
 
@@ -90,14 +91,22 @@ public class MainActivity extends AppCompatActivity
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == REQUEST_IMAGE_CAPTURE) {
             if (resultCode == RESULT_OK)
-                setImageData(resultCode == RESULT_OK ? data : null);
+                setImageData(data);
             return;
+        } else if (requestCode == REQUEST_IMAGE_PICK) {
+            if (resultCode == RESULT_OK)
+                setImageData(data);
         }
         super.onActivityResult(requestCode, resultCode, data);
     }
 
     private void setImageData(Intent data) {
         mReportFragment.setImageData(data);
+    }
+
+    @Override
+    public void onPicturePick(Intent chooserIntent) {
+        startActivityForResult(chooserIntent, REQUEST_IMAGE_PICK);
     }
 
     @Override

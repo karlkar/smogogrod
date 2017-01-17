@@ -1,20 +1,17 @@
 package pl.kksionek.smogogrod.view;
 
 import android.animation.Animator;
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
-import android.graphics.Bitmap;
-import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,19 +21,19 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.io.IOException;
-
 import pl.kksionek.smogogrod.R;
 import pl.kksionek.smogogrod.model.Network;
+import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
-
-import static android.app.Activity.RESULT_OK;
 
 public class ReportFragment extends Fragment {
 
     private FloatingActionButton mFab;
+    private Subscription mSubscription;
 
     public interface ReportFragmentListener {
+        void onPicturePick(Intent data);
+
         void onPictureRequested(Intent data);
     }
 
@@ -70,9 +67,24 @@ public class ReportFragment extends Fragment {
         mReportEMailTextView = (TextView) view.findViewById(R.id.report_email);
         mBtnReport = (Button) view.findViewById(R.id.report_button);
         mBtnReport.setOnClickListener(v -> {
-            Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-            if (takePictureIntent.resolveActivity(v.getContext().getPackageManager()) != null) {
-                mReportFragmentListener.onPictureRequested(takePictureIntent);
+
+            if (canRequestTakePicture()) {
+                CharSequence seq[] = {"Pamięć urządzenia", "Nowe zdjęcie"};
+                new AlertDialog.Builder(getContext())
+                        .setTitle("Wybierz źródło")
+                        .setItems(seq, (dialog1, which) -> {
+                            switch (which) {
+                                case 0:
+                                    requestPickPicture();
+                                    break;
+                                case 1:
+                                    requestTakePicture();
+                                    break;
+                            }
+                        })
+                        .show();
+            } else {
+                requestPickPicture();
             }
         });
         mImage = (ImageView) view.findViewById(R.id.report_image);
@@ -88,13 +100,9 @@ public class ReportFragment extends Fragment {
         mFab.setOnClickListener(view1 -> {
             if (validate()) {
                 Log.d(TAG, "onCreateView: Send data");
-                PreferenceManager.getDefaultSharedPreferences(getContext())
-                        .edit()
-                        .putString("PREF_USERNAME", mReportReporterTextView.getText().toString())
-                        .putString("PREF_EMAIL", mReportEMailTextView.getText().toString())
-                        .apply();
+                saveUserData();
                 showProgressOverlay(true);
-                Network.sendReport(
+                mSubscription = Network.sendReport(
                         getContext(),
                         mReportNameTextView.getText().toString(),
                         mReportDescTextView.getText().toString(),
@@ -105,8 +113,10 @@ public class ReportFragment extends Fragment {
                         mReportEMailTextView.getText().toString(),
                         mImageUri)
                         .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(responseBody -> {
+                        .subscribe(
+                                responseBody -> {
                                     showProgressOverlay(false);
+                                    clearForm();
                                 },
                                 throwable -> {
                                     showProgressOverlay(false);
@@ -123,6 +133,34 @@ public class ReportFragment extends Fragment {
         return view;
     }
 
+    private boolean canRequestTakePicture() {
+        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        return takePictureIntent.resolveActivity(getContext().getPackageManager()) != null;
+    }
+
+    private void requestTakePicture() {
+        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        if (takePictureIntent.resolveActivity(getContext().getPackageManager()) != null) {
+            mReportFragmentListener.onPictureRequested(takePictureIntent);
+        }
+    }
+
+    private void clearForm() {
+        mReportNameTextView.setText("");
+        mReportDescTextView.setText("");
+        mReportCityTextView.setText("");
+        mReportStreetTextView.setText("");
+        mReportStreetNumberTextView.setText("");
+    }
+
+    private void saveUserData() {
+        PreferenceManager.getDefaultSharedPreferences(getContext())
+                .edit()
+                .putString("PREF_USERNAME", mReportReporterTextView.getText().toString())
+                .putString("PREF_EMAIL", mReportEMailTextView.getText().toString())
+                .apply();
+    }
+
     private void showProgressOverlay(boolean show) {
         mFab.setEnabled(!show);
         int duration = getResources().getInteger(android.R.integer.config_shortAnimTime);
@@ -135,20 +173,23 @@ public class ReportFragment extends Fragment {
                     .alpha(0.0f)
                     .setDuration(duration)
                     .setListener(new Animator.AnimatorListener() {
-                @Override
-                public void onAnimationStart(Animator animation) {
-                }
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    mOverlay.setVisibility(View.GONE);
-                }
-                @Override
-                public void onAnimationCancel(Animator animation) {
-                }
-                @Override
-                public void onAnimationRepeat(Animator animation) {
-                }
-            }).start();
+                        @Override
+                        public void onAnimationStart(Animator animation) {
+                        }
+
+                        @Override
+                        public void onAnimationEnd(Animator animation) {
+                            mOverlay.setVisibility(View.GONE);
+                        }
+
+                        @Override
+                        public void onAnimationCancel(Animator animation) {
+                        }
+
+                        @Override
+                        public void onAnimationRepeat(Animator animation) {
+                        }
+                    }).start();
         }
     }
 
@@ -193,5 +234,24 @@ public class ReportFragment extends Fragment {
         }
 
         return result;
+    }
+
+    @Override
+    public void onDestroyView() {
+        if (mSubscription != null && !mSubscription.isUnsubscribed())
+            mSubscription.unsubscribe();
+        super.onDestroyView();
+    }
+
+    private void requestPickPicture() {
+        Intent getIntent = new Intent(Intent.ACTION_GET_CONTENT);
+        getIntent.setType("image/*");
+
+        Intent pickIntent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        pickIntent.setType("image/*");
+
+        Intent chooserIntent = Intent.createChooser(getIntent, "Wybierz zdjęcie");
+        chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, new Intent[]{pickIntent});
+        mReportFragmentListener.onPicturePick(chooserIntent);
     }
 }
