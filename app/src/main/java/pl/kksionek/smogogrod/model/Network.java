@@ -34,6 +34,8 @@ public class Network {
 
     private static final String TAG = "NETWORK";
 
+    public static final int LEGIONOWO_STATION_ID = 471;
+
     private static final String MULTIPART_FORM_DATA = "multipart/form-data";
 
     private static final Pattern FEATURE_PATTERN =
@@ -46,7 +48,6 @@ public class Network {
             Pattern.compile("title: '(.*?)'");
     private static final Pattern LABEL_PATTERN =
             Pattern.compile("label: '(.*?)'");
-    private static final int LEGIONOWO_STATION_ID = 471;
 
     private Network() {
     }

@@ -1,6 +1,7 @@
 package pl.kksionek.smogogrod.model;
 
 import android.support.v7.widget.RecyclerView;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,18 +10,19 @@ import java.util.ArrayList;
 
 import pl.kksionek.smogogrod.R;
 import pl.kksionek.smogogrod.data.ChartElement;
+import pl.kksionek.smogogrod.data.Station;
 import pl.kksionek.smogogrod.data.StationDetails;
 
 public class StatusAdapter extends RecyclerView.Adapter<StatusViewHolder> {
 
-    private ArrayList<StationDetails> mStations = new ArrayList<>();
+    private ArrayList<Pair<Station,StationDetails>> mStations = new ArrayList<>();
 
-    public void add(StationDetails station) {
+    public void add(Pair<Station, StationDetails> station) {
         mStations.add(station);
         notifyDataSetChanged();
     }
 
-    public void remove(StationDetails station) {
+    public void remove(Pair<Station, StationDetails> station) {
         mStations.remove(station);
         notifyDataSetChanged();
     }
@@ -36,9 +38,10 @@ public class StatusAdapter extends RecyclerView.Adapter<StatusViewHolder> {
 
     @Override
     public void onBindViewHolder(StatusViewHolder holder, int position) {
-        StationDetails station = mStations.get(position);
+        Pair<Station,StationDetails> station = mStations.get(position);
         //TODO: handle no data
 
+        holder.cardTitle.setText(station.first.getStationName());
         holder.pm10.setText("N/A");
         holder.pm25.setText("N/A");
         holder.no2.setText("N/A");
@@ -47,7 +50,7 @@ public class StatusAdapter extends RecyclerView.Adapter<StatusViewHolder> {
         holder.c6h6.setText("N/A");
         holder.co.setText("N/A");
 
-        for (ChartElement element : station.getChartElements()) {
+        for (ChartElement element : station.second.getChartElements()) {
             switch (element.getKey()) {
                 case "PM10":
                     holder.pm10.setText(String.valueOf(element.getLastValue()));
