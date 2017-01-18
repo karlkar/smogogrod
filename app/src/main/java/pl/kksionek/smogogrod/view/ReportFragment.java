@@ -1,6 +1,7 @@
 package pl.kksionek.smogogrod.view;
 
 import android.animation.Animator;
+import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
@@ -10,7 +11,6 @@ import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -70,7 +70,7 @@ public class ReportFragment extends Fragment {
 
             if (canRequestTakePicture()) {
                 CharSequence seq[] = {"Pamięć urządzenia", "Nowe zdjęcie"};
-                new AlertDialog.Builder(getContext())
+                new AlertDialog.Builder(getActivity())
                         .setTitle("Wybierz źródło")
                         .setItems(seq, (dialog1, which) -> {
                             switch (which) {
@@ -91,9 +91,9 @@ public class ReportFragment extends Fragment {
 
         mOverlay = view.findViewById(R.id.fragment_report_progress_overlay);
 
-        mReportReporterTextView.setText(PreferenceManager.getDefaultSharedPreferences(getContext())
+        mReportReporterTextView.setText(PreferenceManager.getDefaultSharedPreferences(getActivity())
                 .getString("PREF_USERNAME", ""));
-        mReportEMailTextView.setText(PreferenceManager.getDefaultSharedPreferences(getContext())
+        mReportEMailTextView.setText(PreferenceManager.getDefaultSharedPreferences(getActivity())
                 .getString("PREF_EMAIL", ""));
 
         mFab = (FloatingActionButton) view.findViewById(R.id.fab);
@@ -103,7 +103,7 @@ public class ReportFragment extends Fragment {
                 saveUserData();
                 showProgressOverlay(true);
                 mSubscription = Network.sendReport(
-                        getContext(),
+                        getActivity(),
                         mReportNameTextView.getText().toString(),
                         mReportDescTextView.getText().toString(),
                         mReportCityTextView.getText().toString(),
@@ -122,12 +122,12 @@ public class ReportFragment extends Fragment {
                                     showProgressOverlay(false);
                                     throwable.printStackTrace();
                                     Toast.makeText(
-                                            getContext(),
+                                            getActivity(),
                                             "Problem z połączeniem. Spróbuj ponownie.",
                                             Toast.LENGTH_SHORT).show();
                                 });
             } else {
-                Toast.makeText(getContext(), "Wypełnij formularz", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(), "Wypełnij formularz", Toast.LENGTH_SHORT).show();
             }
         });
         return view;
@@ -135,12 +135,12 @@ public class ReportFragment extends Fragment {
 
     private boolean canRequestTakePicture() {
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        return takePictureIntent.resolveActivity(getContext().getPackageManager()) != null;
+        return takePictureIntent.resolveActivity(getActivity().getPackageManager()) != null;
     }
 
     private void requestTakePicture() {
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        if (takePictureIntent.resolveActivity(getContext().getPackageManager()) != null) {
+        if (takePictureIntent.resolveActivity(getActivity().getPackageManager()) != null) {
             mReportFragmentListener.onPictureRequested(takePictureIntent);
         }
     }
@@ -154,7 +154,7 @@ public class ReportFragment extends Fragment {
     }
 
     private void saveUserData() {
-        PreferenceManager.getDefaultSharedPreferences(getContext())
+        PreferenceManager.getDefaultSharedPreferences(getActivity())
                 .edit()
                 .putString("PREF_USERNAME", mReportReporterTextView.getText().toString())
                 .putString("PREF_EMAIL", mReportEMailTextView.getText().toString())
@@ -217,7 +217,7 @@ public class ReportFragment extends Fragment {
         mImageUri = data.getData();
         mImage.setImageURI(mImageUri);
 
-        mImage.setRotation(getOrientation(getContext(), mImageUri));
+        mImage.setRotation(getOrientation(getActivity(), mImageUri));
     }
 
     public static int getOrientation(Context context, Uri photoUri) {
@@ -240,6 +240,20 @@ public class ReportFragment extends Fragment {
     public void onDestroyView() {
         if (mSubscription != null && !mSubscription.isUnsubscribed())
             mSubscription.unsubscribe();
+
+        mReportNameTextView = null;
+        mReportDescTextView = null;
+        mReportCityTextView = null;
+        mReportStreetTextView = null;
+        mReportStreetNumberTextView = null;
+        mReportReporterTextView = null;
+        mReportEMailTextView = null;
+        mBtnReport = null;
+
+        mImage = null;
+        mOverlay = null;
+        mFab = null;
+
         super.onDestroyView();
     }
 

@@ -16,11 +16,14 @@ import pl.kksionek.smogogrod.R;
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, ReportFragment.ReportFragmentListener {
 
+    private static final String TAG = "MainActivity";
+
     public static final int REQUEST_IMAGE_CAPTURE = 9876;
     public static final int REQUEST_IMAGE_PICK = 6789;
 
     private ReportFragment mReportFragment = null;
-    private StatusFragment mStatusFragment;
+    private StatusFragment mStatusFragment = null;
+    private int mCheckedItem = -1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,11 +33,15 @@ public class MainActivity extends AppCompatActivity
         setSupportActionBar(toolbar);
 
         if (savedInstanceState == null) {
-            getSupportFragmentManager()
+            mCheckedItem = R.id.menu_item_status;
+            if (mStatusFragment == null)
+                mStatusFragment = new StatusFragment();
+            getFragmentManager()
                     .beginTransaction()
-                    .replace(R.id.content_main, new StatusFragment())
+                    .add(R.id.content_main, mStatusFragment)
                     .commit();
-        }
+        } else
+            mCheckedItem = savedInstanceState.getInt("active_fragment");
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -44,7 +51,13 @@ public class MainActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-        navigationView.setCheckedItem(R.id.menu_item_status);
+        navigationView.setCheckedItem(mCheckedItem);
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putInt("active_fragment", mCheckedItem);
     }
 
     @Override
@@ -66,19 +79,19 @@ public class MainActivity extends AppCompatActivity
         if (id == R.id.menu_item_report) {
             if (mReportFragment == null)
                 mReportFragment = new ReportFragment();
-            getSupportFragmentManager()
+            getFragmentManager()
                     .beginTransaction()
                     .replace(R.id.content_main, mReportFragment)
                     .commit();
         } else if (id == R.id.menu_item_map) {
-            getSupportFragmentManager()
+            getFragmentManager()
                     .beginTransaction()
-                    .replace(R.id.content_main, new MapFragment())
+                    .replace(R.id.content_main, new LwoMapFragment())
                     .commit();
         } else if (id == R.id.menu_item_status) {
             if (mStatusFragment == null)
                 mStatusFragment = new StatusFragment();
-            getSupportFragmentManager()
+            getFragmentManager()
                     .beginTransaction()
                     .replace(R.id.content_main, mStatusFragment)
                     .commit();

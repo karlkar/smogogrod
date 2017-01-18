@@ -1,18 +1,18 @@
 package pl.kksionek.smogogrod.view;
 
 import android.Manifest;
+import android.annotation.TargetApi;
 import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v4.app.ActivityCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
@@ -24,11 +24,12 @@ import java.util.ArrayList;
 import pl.kksionek.smogogrod.R;
 import pl.kksionek.smogogrod.data.MarkedPlace;
 import pl.kksionek.smogogrod.model.Network;
+import rx.Observable;
 import rx.Single;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.subscriptions.CompositeSubscription;
 
-public class MapFragment extends SupportMapFragment {
+public class LwoMapFragment extends MapFragment {
 
     private static final String TAG = "MAPFRAGMENT";
 
@@ -46,6 +47,12 @@ public class MapFragment extends SupportMapFragment {
     private GoogleMap mMap;
     private Single<GoogleMap> mMapReadySignal;
     private final CompositeSubscription mSubscriptions = new CompositeSubscription();
+
+    @Override
+    public void onCreate(Bundle bundle) {
+        super.onCreate(bundle);
+        setRetainInstance(true);
+    }
 
     private void showOnMap(ArrayList<MarkedPlace> markedPlaces) {
         for (MarkedPlace place : markedPlaces) {
@@ -111,8 +118,8 @@ public class MapFragment extends SupportMapFragment {
 
     @Override
     @SuppressWarnings({"MissingPermission"})
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
+    public void onStart() {
+        super.onStart();
         mMapReadySignal = Single.<GoogleMap>fromEmitter(objectEmitter -> {
             OnMapReadyCallback callback = googleMap -> {
                 mMap = googleMap;
@@ -124,11 +131,12 @@ public class MapFragment extends SupportMapFragment {
         mSubscriptions.add(mMapReadySignal
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe((googleMap) -> {
-                    mMap.setInfoWindowAdapter(new MyInfoWindowAdapter(LayoutInflater.from(getContext())));
+                    mMap.setInfoWindowAdapter(
+                            new MyInfoWindowAdapter(LayoutInflater.from(getContext())));
                     mMap.moveCamera(CameraUpdateFactory.zoomTo(13.0f));
                     mMap.moveCamera(CameraUpdateFactory.newLatLng(LAT_LNG_LEGIONOWO));
-                    if (isAnyPermissionGranted(
-                            new String[] {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && isAnyPermissionGranted(
+                            new String[]{
                                     Manifest.permission.ACCESS_FINE_LOCATION,
                                     Manifest.permission.ACCESS_COARSE_LOCATION})) {
                         mMap.setMyLocationEnabled(true);
@@ -136,19 +144,21 @@ public class MapFragment extends SupportMapFragment {
                         mMap.setMyLocationEnabled(false);
                 }));
 
-        mSubscriptions.add(Network.getMarkedPlaces(getContext())
-                .zipWith(mMapReadySignal.toObservable(), (markedPlaces, ignore) -> markedPlaces)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(
-                        this::showOnMap,
-                        Throwable::printStackTrace));
+        mSubscriptions.add(
+                Observable.zip(
+                        Network.getMarkedPlaces(getContext()),
+                        mMapReadySignal.toObservable(),
+                        (markedPlaces, ignore) -> markedPlaces)
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(
+                                this::showOnMap,
+                                Throwable::printStackTrace));
     }
 
+    @TargetApi(android.os.Build.VERSION_CODES.M)
     private boolean isAnyPermissionGranted(String[] strings) {
         for (String permission : strings) {
-            if (ActivityCompat.checkSelfPermission(
-                    getActivity(),
-                    permission) == PackageManager.PERMISSION_GRANTED)
+            if (getActivity().checkSelfPermission(permission) == PackageManager.PERMISSION_GRANTED)
                 return true;
         }
         return false;
@@ -156,8 +166,8 @@ public class MapFragment extends SupportMapFragment {
 
     @Override
     public void onDestroy() {
-        mSubscriptions.unsubscribe();
-        mSubscriptions.clear();
+        if (mSubscriptions!= null)
+            mSubscriptions.clear();
         super.onDestroy();
     }
 }

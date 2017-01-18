@@ -1,10 +1,11 @@
 package pl.kksionek.smogogrod.view;
 
+import android.app.Fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,8 +22,17 @@ import rx.schedulers.Schedulers;
 
 public class StatusFragment extends Fragment {
 
+    private static final String TAG = "StatusFragment";
+
     RecyclerView mRecyclerView;
     private Subscription mSubscription;
+    private StatusAdapter mStatusAdapter = null;
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setRetainInstance(true);
+    }
 
     @Nullable
     @Override
@@ -33,22 +43,28 @@ public class StatusFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_status, null);
 
         mRecyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        StatusAdapter statusAdapter = new StatusAdapter();
-        mRecyclerView.setAdapter(statusAdapter);
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        boolean redownload = false;
+        if (mStatusAdapter == null) {
+            Log.d(TAG, "onCreateView: ");
+            mStatusAdapter = new StatusAdapter();
+            redownload = true;
+        }
+        mRecyclerView.setAdapter(mStatusAdapter);
 
-        mSubscription = Network.getLegionowoStationDetails(getContext())
-                .subscribeOn(Schedulers.io())
-                .retryWhen(errors ->
-                        errors
-                                .zipWith(
-                                        Observable.range(1, 3), (n, i) -> i)
-                                .flatMap(
-                                        retryCount -> Observable.timer(5L * retryCount, TimeUnit.SECONDS)))
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(statusAdapter::add,
-                        Throwable::printStackTrace);
-
+        if (redownload) {
+            mSubscription = Network.getLegionowoStationDetails(getActivity())
+                    .subscribeOn(Schedulers.io())
+                    .retryWhen(errors ->
+                            errors
+                                    .zipWith(
+                                            Observable.range(1, 3), (n, i) -> i)
+                                    .flatMap(
+                                            retryCount -> Observable.timer(5L * retryCount, TimeUnit.SECONDS)))
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(mStatusAdapter::add,
+                            Throwable::printStackTrace);
+        }
         return view;
     }
 
@@ -56,6 +72,7 @@ public class StatusFragment extends Fragment {
     public void onDestroyView() {
         if (mSubscription != null && !mSubscription.isUnsubscribed())
             mSubscription.unsubscribe();
+        mRecyclerView = null;
         super.onDestroyView();
     }
 }
