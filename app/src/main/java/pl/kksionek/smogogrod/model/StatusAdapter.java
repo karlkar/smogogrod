@@ -39,7 +39,6 @@ public class StatusAdapter extends RecyclerView.Adapter<StatusViewHolder> {
     @Override
     public void onBindViewHolder(StatusViewHolder holder, int position) {
         Pair<Station,StationDetails> station = mStations.get(position);
-        //TODO: handle no data
 
         holder.cardTitle.setText(station.first.getStationName());
         holder.pm10.setText("N/A");
@@ -54,27 +53,49 @@ public class StatusAdapter extends RecyclerView.Adapter<StatusViewHolder> {
             switch (element.getKey()) {
                 case "PM10":
                     holder.pm10.setText(String.valueOf(element.getLastValue()));
+                    holder.pm10_row.setVisibility(View.VISIBLE);
                     break;
                 case "PM25":
                     holder.pm25.setText(String.valueOf(element.getLastValue()));
+                    holder.pm25_row.setVisibility(View.VISIBLE);
                     break;
                 case "NO2":
                     holder.no2.setText(String.valueOf(element.getLastValue()));
+                    holder.no2_row.setVisibility(View.VISIBLE);
                     break;
                 case "SO2":
                     holder.so2.setText(String.valueOf(element.getLastValue()));
+                    holder.so2_row.setVisibility(View.VISIBLE);
                     break;
                 case "O3":
                     holder.o3.setText(String.valueOf(element.getLastValue()));
+                    holder.o3_row.setVisibility(View.VISIBLE);
                     break;
                 case "C6H6":
                     holder.c6h6.setText(String.valueOf(element.getLastValue()));
+                    holder.c6h6_row.setVisibility(View.VISIBLE);
                     break;
                 case "CO":
                     holder.co.setText(String.valueOf(element.getLastValue()));
+                    holder.co_row.setVisibility(View.VISIBLE);
                     break;
             }
         }
+
+        if (holder.pm10.getText().equals("N/A"))
+            holder.pm10_row.setVisibility(View.GONE);
+        if (holder.pm25.getText().equals("N/A"))
+            holder.pm25_row.setVisibility(View.GONE);
+        if (holder.no2.getText().equals("N/A"))
+            holder.no2_row.setVisibility(View.GONE);
+        if (holder.so2.getText().equals("N/A"))
+            holder.so2_row.setVisibility(View.GONE);
+        if (holder.o3.getText().equals("N/A"))
+            holder.o3_row.setVisibility(View.GONE);
+        if (holder.c6h6.getText().equals("N/A"))
+            holder.c6h6_row.setVisibility(View.GONE);
+        if (holder.co.getText().equals("N/A"))
+            holder.co_row.setVisibility(View.GONE);
     }
 
     @Override

@@ -2,6 +2,7 @@ package pl.kksionek.smogogrod.model;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.TableRow;
 import android.widget.TextView;
 
 import pl.kksionek.smogogrod.R;
@@ -17,6 +18,14 @@ public class StatusViewHolder extends RecyclerView.ViewHolder {
     public TextView co;
     public TextView c6h6;
 
+    public TableRow pm10_row;
+    public TableRow pm25_row;
+    public TableRow no2_row;
+    public TableRow so2_row;
+    public TableRow o3_row;
+    public TableRow co_row;
+    public TableRow c6h6_row;
+
     public StatusViewHolder(View itemView) {
         super(itemView);
         cardTitle = (TextView) itemView.findViewById(R.id.station_name);
@@ -27,5 +36,13 @@ public class StatusViewHolder extends RecyclerView.ViewHolder {
         o3 = (TextView) itemView.findViewById(R.id.item_o3);
         co = (TextView) itemView.findViewById(R.id.item_co);
         c6h6 = (TextView) itemView.findViewById(R.id.item_c6h6);
+
+        pm10_row = (TableRow) itemView.findViewById(R.id.item_pm10_row);
+        pm25_row = (TableRow) itemView.findViewById(R.id.item_pm25_row);
+        no2_row = (TableRow) itemView.findViewById(R.id.item_no2_row);
+        so2_row = (TableRow) itemView.findViewById(R.id.item_so2_row);
+        o3_row = (TableRow) itemView.findViewById(R.id.item_o3_row);
+        co_row = (TableRow) itemView.findViewById(R.id.item_co_row);
+        c6h6_row = (TableRow) itemView.findViewById(R.id.item_c6h6_row);
     }
 }
