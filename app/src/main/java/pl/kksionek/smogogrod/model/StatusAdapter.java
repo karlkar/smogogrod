@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Locale;
 
 import pl.kksionek.smogogrod.R;
@@ -28,15 +29,18 @@ public class StatusAdapter extends RecyclerView.Adapter<StatusViewHolder> {
 
     private static final SimpleDateFormat sDateFormatter = new SimpleDateFormat("DD-MM-yyyy hh:mm", Locale.ROOT);
 
-    private ArrayList<Pair<Station, StationDetails>> mStations = new ArrayList<>();
+    private ArrayList<Integer> mIdentifiers = new ArrayList<>();
+    private HashMap<Integer, Pair<Station, StationDetails>> mStations = new HashMap<>();
 
     public void add(Pair<Station, StationDetails> station) {
-        mStations.add(station);
+        mIdentifiers.add(station.first.getStationId());
+        mStations.put(station.first.getStationId(), station);
         notifyDataSetChanged();
     }
 
     public void remove(Pair<Station, StationDetails> station) {
-        mStations.remove(station);
+        mIdentifiers.remove(station.first.getStationId());
+        mStations.remove(station.first.getStationId());
         notifyDataSetChanged();
     }
 
@@ -51,7 +55,7 @@ public class StatusAdapter extends RecyclerView.Adapter<StatusViewHolder> {
 
     @Override
     public void onBindViewHolder(StatusViewHolder holder, int position) {
-        Pair<Station, StationDetails> station = mStations.get(position);
+        Pair<Station, StationDetails> station = mStations.get(mIdentifiers.get(position));
 
         holder.cardTitle.setText(station.first.getStationName());
         holder.timestamp.setText(sDateFormatter.format(station.second.getChartElements().get(0).getLastTimestamp()));
