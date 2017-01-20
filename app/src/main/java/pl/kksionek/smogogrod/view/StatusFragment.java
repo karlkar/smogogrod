@@ -82,18 +82,6 @@ public class StatusFragment extends Fragment {
                     .subscribe(
                             pair -> mStatusAdapter.add(pair),
                             Throwable::printStackTrace);
-
-//            mSubscription = Network.getLegionowoStationDetails(getActivity())
-//                    .subscribeOn(Schedulers.io())
-//                    .retryWhen(errors ->
-//                            errors
-//                                    .zipWith(
-//                                            Observable.range(1, 3), (n, i) -> i)
-//                                    .flatMap(
-//                                            retryCount -> Observable.timer(5L * retryCount, TimeUnit.SECONDS)))
-//                    .observeOn(AndroidSchedulers.mainThread())
-//                    .subscribe(mStatusAdapter::add,
-//                            Throwable::printStackTrace);
         }
         return view;
     }

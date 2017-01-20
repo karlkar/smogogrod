@@ -34,8 +34,6 @@ public class Network {
 
     private static final String TAG = "NETWORK";
 
-    public static final int LEGIONOWO_STATION_ID = 471;
-
     private static final String MULTIPART_FORM_DATA = "multipart/form-data";
 
     private static final Pattern FEATURE_PATTERN =
@@ -62,10 +60,6 @@ public class Network {
         return SmogApplication.getAirRetrofitService(context)
                 .getStationDetails(1, id)
                 .subscribeOn(Schedulers.io());
-    }
-
-    public static Observable<StationDetails> getLegionowoStationDetails(@NonNull Context context) {
-        return getStationDetails(context, LEGIONOWO_STATION_ID);
     }
 
     public static Observable<ArrayList<MarkedPlace>> getMarkedPlaces(@NonNull Context context) {

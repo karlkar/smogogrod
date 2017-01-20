@@ -10,6 +10,7 @@ import pl.kksionek.smogogrod.R;
 public class StatusViewHolder extends RecyclerView.ViewHolder {
 
     public TextView cardTitle;
+    public TextView timestamp;
     public TextView pm10;
     public TextView pm25;
     public TextView no2;
@@ -29,6 +30,7 @@ public class StatusViewHolder extends RecyclerView.ViewHolder {
     public StatusViewHolder(View itemView) {
         super(itemView);
         cardTitle = (TextView) itemView.findViewById(R.id.station_name);
+        timestamp = (TextView) itemView.findViewById(R.id.station_time);
         pm10 = (TextView) itemView.findViewById(R.id.item_pm10);
         pm25 = (TextView) itemView.findViewById(R.id.item_pm25);
         no2 = (TextView) itemView.findViewById(R.id.item_no2);
