@@ -24,10 +24,6 @@ public class ChartElement {
         return mKey;
     }
 
-    public void setKey(String key) {
-        mKey = key;
-    }
-
     public float getLastValue() {
         for (ArrayList<Double> value : mChartValues) {
             if (value.get(1) != null)
@@ -58,10 +54,6 @@ public class ChartElement {
         return mChartValues;
     }
 
-    public void setChartValues(ArrayList<ArrayList<Double>> chartValues) {
-        mChartValues = chartValues;
-    }
-
     public String getColor() {
         return mColor;
     }
@@ -74,15 +66,7 @@ public class ChartElement {
         return mUnapproved;
     }
 
-    public void setUnapproved(boolean unapproved) {
-        mUnapproved = unapproved;
-    }
-
     public String getUnit() {
         return mUnit;
-    }
-
-    public void setUnit(String unit) {
-        mUnit = unit;
     }
 }

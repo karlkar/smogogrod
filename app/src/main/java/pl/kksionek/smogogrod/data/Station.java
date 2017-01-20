@@ -19,31 +19,11 @@ public class Station {
         return mStationId;
     }
 
-    public void setStationId(int stationId) {
-        mStationId = stationId;
-    }
-
     public String getStationName() {
         return mStationName;
     }
 
-    public void setStationName(String stationName) {
-        mStationName = stationName;
-    }
-
     public int getAqIndex() {
         return mAqIndex;
-    }
-
-    public void setAqIndex(int aqIndex) {
-        mAqIndex = aqIndex;
-    }
-
-    public Values getValues() {
-        return mValues;
-    }
-
-    public void setValues(Values values) {
-        mValues = values;
     }
 }

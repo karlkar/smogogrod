@@ -18,23 +18,11 @@ public class StationDetails {
         return mIsError;
     }
 
-    public void setError(boolean error) {
-        mIsError = error;
-    }
-
     public String getErrorMessage() {
         return mErrorMessage;
     }
 
-    public void setErrorMessage(String errorMessage) {
-        mErrorMessage = errorMessage;
-    }
-
     public ArrayList<ChartElement> getChartElements() {
         return mChartElements;
-    }
-
-    public void setChartElements(ArrayList<ChartElement> chartElements) {
-        mChartElements = chartElements;
     }
 }
