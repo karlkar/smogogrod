@@ -4,7 +4,6 @@ import android.animation.Animator;
 import android.animation.ValueAnimator;
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -42,11 +41,9 @@ public class StatusAdapter extends RecyclerView.Adapter<StatusViewHolder> {
     public void add(Pair<Station, StationDetails> station) {
         Pair<Station, StationDetails> pair = mStations.get(station.first.getStationId());
         mStations.put(station.first.getStationId(), station);
-        if (pair == null) {
+        if (pair == null)
             mIdentifiers.add(station.first.getStationId());
-            notifyDataSetChanged();
-        } else
-            notifyItemChanged(mIdentifiers.indexOf(station.first.getStationId()));
+        notifyDataSetChanged();
     }
 
     public void remove(Pair<Station, StationDetails> station) {
@@ -67,12 +64,20 @@ public class StatusAdapter extends RecyclerView.Adapter<StatusViewHolder> {
     private void animateIfNeeded(ChartElement element, float limit, TextView view) {
         float newValue = (element.getLastValue() / limit) * 100.0f;
         Context context = view.getContext();
-        if (!view.getText().equals(context.getString(
+        CharSequence prevText = view.getText();
+        if (!prevText.equals(context.getString(
                 R.string.adapter_status_percentage,
                 newValue))) {
             ValueAnimator animator = new ValueAnimator();
             animator.setDuration(ANIM_DURATION);
-            animator.setObjectValues(0.0f, newValue);
+            float prevVal;
+            try {
+                prevVal = Float.parseFloat(prevText.toString().substring(0, prevText.length() - 1));
+            } catch (NumberFormatException | StringIndexOutOfBoundsException ex) {
+                ex.printStackTrace();
+                prevVal = 0;
+            }
+            animator.setObjectValues(prevVal, newValue);
             animator.addUpdateListener(animation -> view.setText(
                     context.getString(
                             R.string.adapter_status_percentage,
