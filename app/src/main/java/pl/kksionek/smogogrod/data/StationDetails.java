@@ -25,4 +25,8 @@ public class StationDetails {
     public ArrayList<ChartElement> getChartElements() {
         return mChartElements;
     }
+
+    public long getLastTimestamp() {
+        return mChartElements.get(0).getLastTimestamp();
+    }
 }
