@@ -25,6 +25,7 @@ import pl.kksionek.smogogrod.data.Station;
 import pl.kksionek.smogogrod.data.StationDetails;
 import pl.kksionek.smogogrod.model.Network;
 import pl.kksionek.smogogrod.model.StatusAdapter;
+import rx.Emitter;
 import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
@@ -68,12 +69,16 @@ public class StatusFragment extends Fragment {
         mRecyclerView.setAdapter(mStatusAdapter);
 
         if (redownload) {
-            for (Station station : getStationsFromCache()) {
-                StationDetails stationDetails = getStationDetailsFromCache(station.getStationId());
-                if (stationDetails != null)
-                    mStatusAdapter.add(new Pair<>(station, stationDetails));
-            }
-            mSubscription = Network.getStations(getActivity())
+            mSubscription = Observable.concat(
+                    Observable.fromEmitter(emitter -> {
+                        for (Station station : getStationsFromCache()) {
+                            StationDetails stationDetails = getStationDetailsFromCache(station.getStationId());
+                            if (stationDetails != null)
+                                emitter.onNext(new Pair<>(station, stationDetails));
+                        }
+                        emitter.onCompleted();
+                    }, Emitter.BackpressureMode.DROP),
+                    Network.getStations(getActivity())
                     .subscribeOn(Schedulers.io())
 //                    .doOnNext(this::save)
                     .flatMapIterable(stations -> stations)
@@ -88,7 +93,7 @@ public class StatusFragment extends Fragment {
                                     .zipWith(
                                             Observable.range(1, 3), (n, i) -> i)
                                     .flatMap(
-                                            retryCount -> Observable.timer(5L * retryCount, TimeUnit.SECONDS)))
+                                            retryCount -> Observable.timer(5L * retryCount, TimeUnit.SECONDS))))
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(
                             pair -> mStatusAdapter.add(pair),
