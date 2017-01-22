@@ -11,6 +11,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -57,8 +58,11 @@ public class Network {
     }
 
     public static Observable<StationDetails> getStationDetails(@NonNull Context context, int id) {
+        int days = 1;
+        if (Calendar.getInstance().get(Calendar.HOUR_OF_DAY) < 2)
+            days = 2;
         return SmogApplication.getAirRetrofitService(context)
-                .getStationDetails(1, id)
+                .getStationDetails(days, id)
                 .subscribeOn(Schedulers.io());
     }
 
