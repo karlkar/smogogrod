@@ -38,6 +38,7 @@ import rx.Emitter;
 import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
 public class StatusFragment extends Fragment {
@@ -166,26 +167,21 @@ public class StatusFragment extends Fragment {
                         .flatMap(station -> Network.getStationDetails(getActivity(), station.getStationId())
                                 .map(stationDetails -> new Pair<>(station, stationDetails))
                                 .subscribeOn(Schedulers.io()))
-                        .doOnError(Throwable::printStackTrace)
-                        .retryWhen(errors ->
-                                errors
-                                        .zipWith(
-                                                Observable.range(1, 3), (n, i) -> i)
-                                        .flatMap(
-                                                retryCount -> Observable.timer(5L * retryCount, TimeUnit.SECONDS)))
                         .doOnNext(this::save))
+                .onErrorResumeNext(throwable -> {
+                    throwable.printStackTrace();
+                    return Observable.just(null);
+                })
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                         pair -> {
-                            mStatusAdapter.add(pair);
-                            mSwipeRefreshLayout.setRefreshing(false);
-                        },
-                        throwable -> {
-                            Toast.makeText(
-                                    getActivity(),
-                                    "Problem z połączeniem. Spróbuj ponownie później.",
-                                    Toast.LENGTH_SHORT).show();
-                            throwable.printStackTrace();
+                            if (pair == null) {
+                                Toast.makeText(
+                                        getActivity(),
+                                        "Problem z połączeniem. Spróbuj ponownie później.",
+                                        Toast.LENGTH_SHORT).show();
+                            } else
+                                mStatusAdapter.add(pair);
                             mSwipeRefreshLayout.setRefreshing(false);
                         });
     }
