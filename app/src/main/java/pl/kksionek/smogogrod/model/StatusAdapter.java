@@ -40,9 +40,13 @@ public class StatusAdapter extends RecyclerView.Adapter<StatusViewHolder> {
     private HashMap<Integer, Pair<Station, StationDetails>> mStations = new HashMap<>();
 
     public void add(Pair<Station, StationDetails> station) {
-        mIdentifiers.add(station.first.getStationId());
+        Pair<Station, StationDetails> pair = mStations.get(station.first.getStationId());
         mStations.put(station.first.getStationId(), station);
-        notifyDataSetChanged();
+        if (pair == null) {
+            mIdentifiers.add(station.first.getStationId());
+            notifyDataSetChanged();
+        } else
+            notifyItemChanged(mIdentifiers.indexOf(station.first.getStationId()));
     }
 
     public void remove(Pair<Station, StationDetails> station) {
@@ -166,6 +170,6 @@ public class StatusAdapter extends RecyclerView.Adapter<StatusViewHolder> {
 
     @Override
     public int getItemCount() {
-        return mStations.size();
+        return mIdentifiers.size();
     }
 }
