@@ -26,6 +26,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 import pl.kksionek.smogogrod.R;
 import pl.kksionek.smogogrod.data.Station;
@@ -41,16 +43,19 @@ import rx.schedulers.Schedulers;
 public class StatusFragment extends Fragment {
 
     private static final String TAG = "StatusFragment";
+    public static final String PREF_FILTER = "FILTER";
 
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private RecyclerView mRecyclerView;
     private Subscription mSubscription;
     private StatusAdapter mStatusAdapter = null;
+    private SharedPreferences mSharedPreferences;
+
     private Gson mGson;
     private ArrayList<Pair<String, Integer>> mAvailableStations;
+    private Lock mAvailableStationsLock = new ReentrantLock();
     private FloatingActionButton mFloatingActionButton;
     private List<Integer> mFilterConditions = new ArrayList<>();
-    private SharedPreferences mSharedPreferences;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -59,11 +64,10 @@ public class StatusFragment extends Fragment {
         mGson = new Gson();
 
         mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        Set<String> filter = mSharedPreferences.getStringSet("FILTER", null);
+        Set<String> filter = mSharedPreferences.getStringSet(PREF_FILTER, null);
         if (filter != null) {
-            for (String str : filter) {
+            for (String str : filter)
                 mFilterConditions.add(Integer.parseInt(str));
-            }
         }
     }
 
@@ -92,12 +96,17 @@ public class StatusFragment extends Fragment {
 
         mFloatingActionButton = (FloatingActionButton) view.findViewById(R.id.fragment_status_fab);
         mFloatingActionButton.setOnClickListener(v -> {
+            mAvailableStationsLock.lock();
             if (mAvailableStations == null) {
                 Log.d(TAG, "onCreateView: No available stations");
-                // todo - get stations
+                Toast.makeText(
+                        getActivity(),
+                        "Najpierw odśwież listę obserwowanych stacji.",
+                        Toast.LENGTH_SHORT).show();
+                mAvailableStationsLock.unlock();
                 return;
             }
-            // todo - lock available stations
+
             List<String> strings = new ArrayList<>();
             for (Pair<String, Integer> station : mAvailableStations) {
                 if (!mFilterConditions.contains(station.second))
@@ -105,25 +114,32 @@ public class StatusFragment extends Fragment {
             }
             new AlertDialog.Builder(getActivity())
                     .setItems(strings.toArray(new String[0]), (dialog, which) -> {
-                        Pair<String, Integer> station = mAvailableStations.get(which);
-                        mFilterConditions.add(station.second);
-                        Set<String> newFilter = new TreeSet<>();
-                        Set<String> filter = mSharedPreferences
-                                .getStringSet("FILTER", null);
-                        if (filter != null)
-                            newFilter.addAll(filter);
-                        newFilter.add(String.valueOf(station.second));
-                        mSharedPreferences.edit().putStringSet("FILTER", newFilter).apply();
+                        addNewFilter(mAvailableStations.get(which));
                         mSwipeRefreshLayout.setRefreshing(true);
                         refreshData(false);
+                        mAvailableStationsLock.unlock();
                         dialog.dismiss();
                     })
                     .setTitle("Dodaj stację")
-                    .setNegativeButton(android.R.string.cancel, (dialog, which) -> dialog.dismiss())
+                    .setOnDismissListener(dialog -> mAvailableStationsLock.unlock())
+                    .setNegativeButton(android.R.string.cancel, (dialog, which) -> {
+                        mAvailableStationsLock.unlock();
+                        dialog.dismiss();
+                    })
                     .show();
         });
 
         return view;
+    }
+
+    private void addNewFilter(Pair<String, Integer> station) {
+        mFilterConditions.add(station.second);
+        Set<String> newFilter = new TreeSet<>();
+        Set<String> filter = mSharedPreferences.getStringSet(PREF_FILTER, null);
+        if (filter != null)
+            newFilter.addAll(filter);
+        newFilter.add(String.valueOf(station.second));
+        mSharedPreferences.edit().putStringSet(PREF_FILTER, newFilter).apply();
     }
 
     private void refreshData(boolean useCache) {
@@ -175,6 +191,7 @@ public class StatusFragment extends Fragment {
     }
 
     private void saveAvailableStations(ArrayList<Station> stations) {
+        mAvailableStationsLock.lock();
         mAvailableStations = new ArrayList<>();
         String name;
         for (Station station : stations) {
@@ -184,6 +201,7 @@ public class StatusFragment extends Fragment {
             mAvailableStations.add(Pair.create(name, station.getStationId()));
         }
         Collections.sort(mAvailableStations, (o1, o2) -> o1.first.compareTo(o2.first));
+        mAvailableStationsLock.unlock();
     }
 
     private boolean stationNeedDetails(Station station) {
