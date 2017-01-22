@@ -4,6 +4,7 @@ import android.animation.Animator;
 import android.animation.ValueAnimator;
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -52,6 +53,13 @@ public class StatusAdapter extends RecyclerView.Adapter<StatusViewHolder> {
         notifyDataSetChanged();
     }
 
+    public int remove(int adapterPosition) {
+        Integer id = mIdentifiers.get(adapterPosition);
+        mStations.remove(id);
+        mIdentifiers.remove(adapterPosition);
+        return id;
+    }
+
     @Override
     public StatusViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(parent.getContext()).inflate(
@@ -74,7 +82,6 @@ public class StatusAdapter extends RecyclerView.Adapter<StatusViewHolder> {
             try {
                 prevVal = Float.parseFloat(prevText.toString().substring(0, prevText.length() - 1));
             } catch (NumberFormatException | StringIndexOutOfBoundsException ex) {
-                ex.printStackTrace();
                 prevVal = 0;
             }
             animator.setObjectValues(prevVal, newValue);
@@ -176,5 +183,10 @@ public class StatusAdapter extends RecyclerView.Adapter<StatusViewHolder> {
     @Override
     public int getItemCount() {
         return mIdentifiers.size();
+    }
+
+    public boolean isRemovable(int adapterPosition) {
+        Pair<Station, StationDetails> pair = mStations.get(mIdentifiers.get(adapterPosition));
+        return pair != null && !pair.first.getStationName().toLowerCase().contains("legionowo");
     }
 }

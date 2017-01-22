@@ -10,6 +10,7 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.util.Log;
 import android.util.Pair;
 import android.view.LayoutInflater;
@@ -24,8 +25,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.SortedSet;
 import java.util.TreeSet;
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -38,7 +39,6 @@ import rx.Emitter;
 import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
 public class StatusFragment extends Fragment {
@@ -56,7 +56,7 @@ public class StatusFragment extends Fragment {
     private ArrayList<Pair<String, Integer>> mAvailableStations;
     private Lock mAvailableStationsLock = new ReentrantLock();
     private FloatingActionButton mFloatingActionButton;
-    private List<Integer> mFilterConditions = new ArrayList<>();
+    private SortedSet<Integer> mFilterConditions = new TreeSet<>();
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -83,6 +83,31 @@ public class StatusFragment extends Fragment {
         mSwipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.fragment_status_swipe_layout);
 
         mRecyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
+        ItemTouchHelper.Callback cb = new ItemTouchHelper.Callback() {
+            @Override
+            public int getMovementFlags(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder) {
+                int swipeFlags;
+                if (((StatusAdapter) recyclerView.getAdapter()).isRemovable(viewHolder.getAdapterPosition()))
+                    swipeFlags = ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT;
+                else
+                    swipeFlags = 0;
+                return makeMovementFlags(0, swipeFlags);
+            }
+
+            @Override
+            public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
+                return false;
+            }
+
+            @Override
+            public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
+                int removedId = mStatusAdapter.remove(viewHolder.getAdapterPosition());
+                mStatusAdapter.notifyItemRemoved(viewHolder.getLayoutPosition());
+                removeFilter(removedId);
+            }
+        };
+        ItemTouchHelper helper = new ItemTouchHelper(cb);
+        helper.attachToRecyclerView(mRecyclerView);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         if (mStatusAdapter == null) {
             Log.d(TAG, "onCreateView: ");
@@ -108,25 +133,24 @@ public class StatusFragment extends Fragment {
                 return;
             }
 
-            List<String> strings = new ArrayList<>();
+            List<Pair<String, Integer>> options = new ArrayList<>();
+            List<String> optionStrings = new ArrayList<>();
             for (Pair<String, Integer> station : mAvailableStations) {
-                if (!mFilterConditions.contains(station.second))
-                    strings.add(station.first);
+                if (!mFilterConditions.contains(station.second)) {
+                    options.add(station);
+                    optionStrings.add(station.first);
+                }
             }
             new AlertDialog.Builder(getActivity())
-                    .setItems(strings.toArray(new String[0]), (dialog, which) -> {
-                        addNewFilter(mAvailableStations.get(which));
+                    .setItems(optionStrings.toArray(new String[0]), (dialog, which) -> {
+                        addNewFilter(options.get(which));
                         mSwipeRefreshLayout.setRefreshing(true);
                         refreshData(false);
-                        mAvailableStationsLock.unlock();
                         dialog.dismiss();
                     })
                     .setTitle("Dodaj stację")
                     .setOnDismissListener(dialog -> mAvailableStationsLock.unlock())
-                    .setNegativeButton(android.R.string.cancel, (dialog, which) -> {
-                        mAvailableStationsLock.unlock();
-                        dialog.dismiss();
-                    })
+                    .setNegativeButton(android.R.string.cancel, (dialog, which) -> dialog.dismiss())
                     .show();
         });
 
@@ -141,6 +165,23 @@ public class StatusFragment extends Fragment {
             newFilter.addAll(filter);
         newFilter.add(String.valueOf(station.second));
         mSharedPreferences.edit().putStringSet(PREF_FILTER, newFilter).apply();
+    }
+
+    private void removeFilter(int id) {
+        mFilterConditions.remove((Integer) id);
+        Set<String> newFilter = new TreeSet<>();
+        Set<String> filter = mSharedPreferences.getStringSet(PREF_FILTER, null);
+        if (filter != null) {
+            for (String str : filter) {
+                if (!str.equals(String.valueOf(id)))
+                    newFilter.add(str);
+            }
+        }
+        mSharedPreferences.edit()
+                .putStringSet(PREF_FILTER, newFilter)
+                .remove("STATION_" + id)
+                .remove("STATION_" + id + "_DETAILS")
+                .apply();
     }
 
     private void refreshData(boolean useCache) {
