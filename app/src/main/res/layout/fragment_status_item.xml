@@ -3,6 +3,7 @@
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/tools"
     android:layout_marginTop="10dp"
     android:layout_marginLeft="15dp"
     android:layout_marginRight="15dp"
@@ -19,27 +20,26 @@
         card_view:contentPadding="5dp">
 
         <TableLayout
-            android:stretchColumns="1"
+            android:stretchColumns="3"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
             <TableRow>
                 <TextView
                     android:id="@+id/station_name"
-                    android:layout_span="2"
+                    android:layout_span="4"
                     android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                     android:textStyle="bold"
                     android:gravity="center"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:text="Legionowo, ul. Zegrzyńska 38"/>
+                    android:layout_height="match_parent"/>
 
             </TableRow>
 
             <TableRow>
                 <TextView
                     android:id="@+id/station_time"
-                    android:layout_span="2"
+                    android:layout_span="4"
                     android:textAppearance="@style/TextAppearance.AppCompat.Small"
                     android:gravity="center"
                     android:layout_width="match_parent"
@@ -52,12 +52,20 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Poziom PM10 względem normy: " />
+                    android:text="@string/fragment_status_item_pm10" />
 
                 <TextView
                     android:id="@+id/item_pm10"
-                    android:layout_width="match_parent"
+                    android:layout_marginLeft="5dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content" />
+
+                <ImageView
+                    android:id="@+id/item_pm10_image"
+                    android:layout_marginTop="@dimen/fragment_status_item_image_margin"
+                    android:layout_marginBottom="@dimen/fragment_status_item_image_margin"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"/>
 
             </TableRow>
 
@@ -66,12 +74,20 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Poziom PM2.5 względem normy: " />
+                    android:text="@string/fragment_status_item_pm25" />
 
                 <TextView
                     android:id="@+id/item_pm25"
-                    android:layout_width="match_parent"
+                    android:layout_marginLeft="5dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content" />
+
+                <ImageView
+                    android:id="@+id/item_pm25_image"
+                    android:layout_marginTop="@dimen/fragment_status_item_image_margin"
+                    android:layout_marginBottom="@dimen/fragment_status_item_image_margin"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"/>
 
             </TableRow>
 
@@ -80,12 +96,20 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Poziom NO2 względem normy: " />
+                    android:text="@string/fragment_status_item_no2" />
 
                 <TextView
                     android:id="@+id/item_no2"
-                    android:layout_width="match_parent"
+                    android:layout_marginLeft="5dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content" />
+
+                <ImageView
+                    android:id="@+id/item_no2_image"
+                    android:layout_marginTop="@dimen/fragment_status_item_image_margin"
+                    android:layout_marginBottom="@dimen/fragment_status_item_image_margin"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"/>
 
             </TableRow>
 
@@ -94,12 +118,20 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Poziom SO2 względem normy: " />
+                    android:text="@string/fragment_status_item_so2" />
 
                 <TextView
                     android:id="@+id/item_so2"
-                    android:layout_width="match_parent"
+                    android:layout_marginLeft="5dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content" />
+
+                <ImageView
+                    android:id="@+id/item_so2_image"
+                    android:layout_marginTop="@dimen/fragment_status_item_image_margin"
+                    android:layout_marginBottom="@dimen/fragment_status_item_image_margin"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"/>
 
             </TableRow>
 
@@ -108,12 +140,20 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Poziom O3 względem normy: " />
+                    android:text="@string/fragment_status_item_o3" />
 
                 <TextView
                     android:id="@+id/item_o3"
-                    android:layout_width="match_parent"
+                    android:layout_marginLeft="5dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content" />
+
+                <ImageView
+                    android:id="@+id/item_o3_image"
+                    android:layout_marginTop="@dimen/fragment_status_item_image_margin"
+                    android:layout_marginBottom="@dimen/fragment_status_item_image_margin"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"/>
 
             </TableRow>
 
@@ -122,12 +162,20 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Poziom CO względem normy: " />
+                    android:text="@string/fragment_status_item_co" />
 
                 <TextView
                     android:id="@+id/item_co"
-                    android:layout_width="match_parent"
+                    android:layout_marginLeft="5dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content" />
+
+                <ImageView
+                    android:id="@+id/item_co_image"
+                    android:layout_marginTop="@dimen/fragment_status_item_image_margin"
+                    android:layout_marginBottom="@dimen/fragment_status_item_image_margin"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"/>
 
             </TableRow>
 
@@ -136,12 +184,20 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Poziom C6H6 względem normy: " />
+                    android:text="@string/fragment_status_item_c6h6" />
 
                 <TextView
                     android:id="@+id/item_c6h6"
-                    android:layout_width="match_parent"
+                    android:layout_marginLeft="5dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content" />
+
+                <ImageView
+                    android:id="@+id/item_c6h6_image"
+                    android:layout_marginTop="@dimen/fragment_status_item_image_margin"
+                    android:layout_marginBottom="@dimen/fragment_status_item_image_margin"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"/>
 
             </TableRow>
         </TableLayout>

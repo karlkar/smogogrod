@@ -32,6 +32,17 @@ public class ChartElement {
         return 0;
     }
 
+    public float getPreLastValue() {
+        int notNullCount = 0;
+        for (ArrayList<Double> value : mChartValues) {
+            if (value.get(1) != null) {
+                if (++notNullCount > 1)
+                    return value.get(1).floatValue();
+            }
+        }
+        return 0;
+    }
+
     public long getLastTimestamp() {
         for (ArrayList<Double> value : mChartValues) {
             if (value.get(1) != null)

@@ -11,4 +11,11 @@
     <string name="fragment_status_connection_problem_message">Problem z połączeniem. Spróbuj ponownie później.</string>
     <string name="fragment_status_add_station">Dodaj stację</string>
     <string name="fragment_status_please_refresh_list">Najpierw odśwież listę obserwowanych stacji.</string>
+    <string name="fragment_status_item_pm10">Poziom PM10 względem normy:</string>
+    <string name="fragment_status_item_pm25">Poziom PM2.5 względem normy:</string>
+    <string name="fragment_status_item_no2">Poziom NO₂ względem normy:</string>
+    <string name="fragment_status_item_so2">Poziom SO₂ względem normy:</string>
+    <string name="fragment_status_item_o3">Poziom O₃ względem normy:</string>
+    <string name="fragment_status_item_co">Poziom CO względem normy:</string>
+    <string name="fragment_status_item_c6h6">Poziom C₆H₆ względem normy:</string>
 </resources>
