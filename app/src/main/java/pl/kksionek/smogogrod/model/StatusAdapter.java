@@ -1,8 +1,8 @@
 package pl.kksionek.smogogrod.model;
 
-import android.animation.Animator;
 import android.animation.ValueAnimator;
 import android.content.Context;
+import android.graphics.Color;
 import android.support.annotation.DrawableRes;
 import android.support.v7.widget.RecyclerView;
 import android.util.Pair;
@@ -33,8 +33,15 @@ public class StatusAdapter extends RecyclerView.Adapter<StatusViewHolder> {
     private static final float sO3Limit = 120.0f;
     private static final float sC6H6Limit = 5.0f;
 
+    private static final int sCardBackgroundColor0 = Color.rgb(123, 217, 41);
+    private static final int sCardBackgroundColor1 = Color.rgb(195, 234, 54);
+    private static final int sCardBackgroundColor2 = Color.rgb(255, 230, 99);
+    private static final int sCardBackgroundColor3 = Color.rgb(244, 153, 36);
+    private static final int sCardBackgroundColor4 = Color.rgb(255, 93, 93);
+    private static final int sCardBackgroundColor5 = Color.rgb(206, 88, 88);
+
     private static final SimpleDateFormat sDateFormatter = new SimpleDateFormat("dd-MM-yyyy HH:mm", Locale.getDefault());
-    public static final int ANIM_DURATION = 1000;
+    private static final int ANIM_DURATION = 1000;
 
     private ArrayList<Integer> mIdentifiers = new ArrayList<>();
     private HashMap<Integer, Pair<Station, StationDetails>> mStations = new HashMap<>();
@@ -97,6 +104,27 @@ public class StatusAdapter extends RecyclerView.Adapter<StatusViewHolder> {
     public void onBindViewHolder(StatusViewHolder holder, int position) {
         Pair<Station, StationDetails> station = mStations.get(mIdentifiers.get(position));
 
+        switch (station.first.getAqIndex()) {
+            case 0:
+                holder.cardView.setCardBackgroundColor(sCardBackgroundColor0);
+                break;
+            case 1:
+                holder.cardView.setCardBackgroundColor(sCardBackgroundColor1);
+                break;
+            case 2:
+                holder.cardView.setCardBackgroundColor(sCardBackgroundColor2);
+                break;
+            case 3:
+                holder.cardView.setCardBackgroundColor(sCardBackgroundColor3);
+                break;
+            case 4:
+                holder.cardView.setCardBackgroundColor(sCardBackgroundColor4);
+                break;
+            case 5:
+                holder.cardView.setCardBackgroundColor(sCardBackgroundColor5);
+                break;
+        }
+
         holder.cardTitle.setText(station.first.getStationName());
 
         if (!holder.timestamp.getText().toString().isEmpty()) {
@@ -110,24 +138,6 @@ public class StatusAdapter extends RecyclerView.Adapter<StatusViewHolder> {
                                 sDateFormatter.format(
                                         date.getTime()
                                                 + (long) (diff * (float) animation.getAnimatedValue()))));
-                animator.addListener(new Animator.AnimatorListener() {
-                    @Override
-                    public void onAnimationStart(Animator animation) {
-                    }
-
-                    @Override
-                    public void onAnimationEnd(Animator animation) {
-                        holder.timestamp.setText(sDateFormatter.format(station.second.getLastTimestamp()));
-                    }
-
-                    @Override
-                    public void onAnimationCancel(Animator animation) {
-                    }
-
-                    @Override
-                    public void onAnimationRepeat(Animator animation) {
-                    }
-                });
                 animator.start();
             } catch (ParseException e) {
                 holder.timestamp.setText(sDateFormatter.format(station.second.getLastTimestamp()));

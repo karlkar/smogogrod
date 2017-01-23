@@ -1,5 +1,6 @@
 package pl.kksionek.smogogrod.model;
 
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageView;
@@ -9,6 +10,8 @@ import android.widget.TextView;
 import pl.kksionek.smogogrod.R;
 
 public class StatusViewHolder extends RecyclerView.ViewHolder {
+
+    public CardView cardView;
 
     public TextView cardTitle;
     public TextView timestamp;
@@ -38,6 +41,8 @@ public class StatusViewHolder extends RecyclerView.ViewHolder {
 
     public StatusViewHolder(View itemView) {
         super(itemView);
+        cardView = (CardView) itemView.findViewById(R.id.card_view);
+
         cardTitle = (TextView) itemView.findViewById(R.id.station_name);
         timestamp = (TextView) itemView.findViewById(R.id.station_time);
         pm10 = (TextView) itemView.findViewById(R.id.item_pm10);
