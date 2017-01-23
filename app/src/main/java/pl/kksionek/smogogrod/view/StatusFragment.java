@@ -127,7 +127,7 @@ public class StatusFragment extends Fragment {
                 Log.d(TAG, "onCreateView: No available stations");
                 Toast.makeText(
                         getActivity(),
-                        "Najpierw odśwież listę obserwowanych stacji.",
+                        R.string.fragment_status_please_refresh_list,
                         Toast.LENGTH_SHORT).show();
                 mAvailableStationsLock.unlock();
                 return;
@@ -148,7 +148,7 @@ public class StatusFragment extends Fragment {
                         refreshData(false);
                         dialog.dismiss();
                     })
-                    .setTitle("Dodaj stację")
+                    .setTitle(R.string.fragment_status_add_station)
                     .setOnDismissListener(dialog -> mAvailableStationsLock.unlock())
                     .setNegativeButton(android.R.string.cancel, (dialog, which) -> dialog.dismiss())
                     .show();
@@ -219,12 +219,16 @@ public class StatusFragment extends Fragment {
                             if (pair == null) {
                                 Toast.makeText(
                                         getActivity(),
-                                        "Problem z połączeniem. Spróbuj ponownie później.",
+                                        R.string.fragment_status_connection_problem_message,
                                         Toast.LENGTH_SHORT).show();
                             } else
                                 mStatusAdapter.add(pair);
+                        },
+                        throwable -> {
+                            throwable.printStackTrace();
                             mSwipeRefreshLayout.setRefreshing(false);
-                        });
+                        },
+                        () -> mSwipeRefreshLayout.setRefreshing(false));
     }
 
     private void saveAvailableStations(ArrayList<Station> stations) {

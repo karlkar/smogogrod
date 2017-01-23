@@ -8,4 +8,7 @@
     <string name="action_settings">Ustawienia</string>
 
     <string name="adapter_status_percentage">%1$.0f%%</string>
+    <string name="fragment_status_connection_problem_message">Problem z połączeniem. Spróbuj ponownie później.</string>
+    <string name="fragment_status_add_station">Dodaj stację</string>
+    <string name="fragment_status_please_refresh_list">Najpierw odśwież listę obserwowanych stacji.</string>
 </resources>
