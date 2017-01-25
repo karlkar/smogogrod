@@ -6,13 +6,13 @@ import java.util.ArrayList;
 
 public class StationDetails {
     @SerializedName("isError")
-    boolean mIsError;
+    private boolean mIsError;
 
     @SerializedName("errorMessage")
-    String mErrorMessage;
+    private String mErrorMessage;
 
     @SerializedName("chartElements")
-    ArrayList<ChartElement> mChartElements;
+    private ArrayList<ChartElement> mChartElements;
 
     public boolean isError() {
         return mIsError;

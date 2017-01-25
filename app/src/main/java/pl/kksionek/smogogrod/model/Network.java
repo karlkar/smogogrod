@@ -183,12 +183,10 @@ public class Network {
             RequestBody requestFile = RequestBody.create(
                     MediaType.parse(MULTIPART_FORM_DATA),
                     byteArray);
-            MultipartBody.Part body =
-                    MultipartBody.Part.createFormData(
-                            name,
-                            fileUri.getLastPathSegment(),
-                            requestFile);
-            return body;
+            return MultipartBody.Part.createFormData(
+                    name,
+                    fileUri.getLastPathSegment(),
+                    requestFile);
         } catch (IOException e) {
             e.printStackTrace();
         }

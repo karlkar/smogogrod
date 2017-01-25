@@ -13,7 +13,7 @@
         android:paddingLeft="10dp"
         android:paddingRight="10dp"
         android:gravity="center"
-        android:text="Nowy punkt"/>
+        android:text="@string/fragment_report_title_new_point"/>
 
     <android.support.design.widget.FloatingActionButton
             android:id="@+id/fab"
@@ -47,14 +47,14 @@
                     android:layout_height="wrap_content"
                     android:singleLine="true"
                     android:maxLines="1"
-                    android:text="Nazwa na mapie:"/>
+                    android:text="@string/fragment_report_name_on_map"/>
 
                 <EditText
                     android:id="@+id/report_name"
                     android:inputType="text"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:hint="Nazwa na mapie"/>
+                    android:hint="@string/fragment_report_name_on_map_hint"/>
 
             </TableRow>
 
@@ -67,14 +67,14 @@
                     android:layout_height="wrap_content"
                     android:singleLine="true"
                     android:maxLines="1"
-                    android:text="Opis na mapie:"/>
+                    android:text="@string/fragment_report_desc_on_map"/>
 
                 <EditText
                     android:id="@+id/report_desc"
                     android:inputType="text"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:hint="Opis"/>
+                    android:hint="@string/fragment_report_desc_on_map_hint"/>
 
             </TableRow>
 
@@ -87,7 +87,7 @@
                     android:layout_span="2"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Lokalizacja"/>
+                    android:text="@string/fragment_report_location"/>
 
             </TableRow>
             <TableRow
@@ -99,14 +99,14 @@
                     android:layout_height="wrap_content"
                     android:singleLine="true"
                     android:maxLines="1"
-                    android:text="Miejscowość:"/>
+                    android:text="@string/fragment_report_city"/>
 
                 <EditText
                     android:id="@+id/report_city"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:inputType="textPostalAddress"
-                    android:hint="Miejscowość"/>
+                    android:hint="@string/fragment_report_city_hint"/>
 
             </TableRow>
             <TableRow
@@ -118,14 +118,14 @@
                     android:layout_height="wrap_content"
                     android:singleLine="true"
                     android:maxLines="1"
-                    android:text="Ulica:"/>
+                    android:text="@string/fragment_report_street"/>
 
                 <EditText
                     android:id="@+id/report_street"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:inputType="textPostalAddress"
-                    android:hint="Ulica"/>
+                    android:hint="@string/fragment_report_street_hint"/>
 
             </TableRow>
             <TableRow
@@ -137,14 +137,14 @@
                     android:layout_height="wrap_content"
                     android:singleLine="true"
                     android:maxLines="1"
-                    android:text="Numer budynku:"/>
+                    android:text="@string/fragment_report_street_num"/>
 
                 <EditText
                     android:id="@+id/report_number"
                     android:inputType="number"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:hint="Numer"/>
+                    android:hint="@string/fragment_report_street_num_hint"/>
 
             </TableRow>
 
@@ -157,7 +157,7 @@
                     android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Zgłaszający (będzie ukryte)"/>
+                    android:text="@string/fragment_report_reporter_title"/>
 
             </TableRow>
             <TableRow
@@ -169,14 +169,14 @@
                     android:layout_height="wrap_content"
                     android:singleLine="true"
                     android:maxLines="1"
-                    android:text="Kto zgłasza:"/>
+                    android:text="@string/fragment_report_reporter"/>
 
                 <EditText
                     android:id="@+id/report_reporter"
                     android:inputType="textPersonName"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:hint="Imię/nick:"/>
+                    android:hint="@string/fragment_report_reporter_hint"/>
 
             </TableRow>
             <TableRow
@@ -188,14 +188,14 @@
                     android:layout_height="wrap_content"
                     android:singleLine="true"
                     android:maxLines="1"
-                    android:text="E-mail:"/>
+                    android:text="@string/fragment_report_reporter_email"/>
 
                 <EditText
                     android:id="@+id/report_email"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:inputType="textEmailAddress"
-                    android:hint="E-mail"/>
+                    android:hint="@string/fragment_report_reporter_email_hint"/>
 
             </TableRow>
 
@@ -208,7 +208,7 @@
                     android:layout_span="2"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Zdjęcie"/>
+                    android:text="@string/fragment_report_photo_title"/>
 
             </TableRow>
             <TableRow
@@ -222,7 +222,7 @@
                     android:layout_height="wrap_content"
                     android:singleLine="true"
                     android:maxLines="1"
-                    android:text="Zdjęcie"/>
+                    android:text="@string/fragment_report_photo_button"/>
 
                 <ImageView
                     android:id="@+id/report_image"

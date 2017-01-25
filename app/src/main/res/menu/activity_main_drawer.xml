@@ -5,23 +5,23 @@
         <item
             android:id="@+id/menu_item_status"
             android:icon="@android:drawable/ic_menu_help"
-            android:title="Stan powietrza" />
+            android:title="@string/activity_main_drawer_title_air_state" />
         <item
             android:id="@+id/menu_item_map"
             android:icon="@android:drawable/ic_dialog_map"
-            android:title="Mapa" />
+            android:title="@string/activity_main_drawer_title_map" />
         <item
             android:id="@+id/menu_item_report"
             android:icon="@android:drawable/ic_menu_send"
-            android:title="Zgłoś truciciela" />
+            android:title="@string/activity_main_drawer_title_report" />
     </group>
 
-    <item android:title="Społeczność">
+    <item android:title="@string/activity_main_drawer_title_society">
         <menu>
             <item
                 android:id="@+id/menu_item_share"
                 android:icon="@drawable/ic_menu_send"
-                android:title="Udostępnij" />
+                android:title="@string/activity_main_drawer_title_share" />
         </menu>
     </item>
 

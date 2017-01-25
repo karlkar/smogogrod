@@ -44,7 +44,7 @@ import rx.schedulers.Schedulers;
 public class StatusFragment extends Fragment {
 
     private static final String TAG = "StatusFragment";
-    public static final String PREF_FILTER = "FILTER";
+    private static final String PREF_FILTER = "FILTER";
 
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private RecyclerView mRecyclerView;
@@ -54,8 +54,8 @@ public class StatusFragment extends Fragment {
 
     private Gson mGson;
     private ArrayList<Pair<String, Integer>> mAvailableStations;
-    private Lock mAvailableStationsLock = new ReentrantLock();
-    private SortedSet<Integer> mFilterConditions = new TreeSet<>();
+    private final Lock mAvailableStationsLock = new ReentrantLock();
+    private final SortedSet<Integer> mFilterConditions = new TreeSet<>();
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {

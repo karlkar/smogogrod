@@ -1,9 +1,7 @@
 package pl.kksionek.smogogrod.view;
 
-import android.Manifest;
 import android.annotation.TargetApi;
 import android.content.pm.PackageManager;
-import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -35,14 +33,9 @@ public class LwoMapFragment extends MapFragment {
 
     private static final LatLng LAT_LNG_LEGIONOWO = new LatLng(52.3998006, 20.934969);
 
-    public static BitmapDescriptor mBitmapDescriptorFactory = null;
-    public static BitmapDescriptor mBitmapDescriptorRequest = null;
-    public static BitmapDescriptor mBitmapDescriptorMeasurement = null;
-
-//    private MapFragmentListener mMapFragmentListener;
-//    interface MapFragmentListener {
-//        void onMapReady();
-//    }
+    private static BitmapDescriptor mBitmapDescriptorFactory = null;
+    private static BitmapDescriptor mBitmapDescriptorRequest = null;
+    private static BitmapDescriptor mBitmapDescriptorMeasurement = null;
 
     private GoogleMap mMap;
     private Single<GoogleMap> mMapReadySignal;
@@ -117,7 +110,6 @@ public class LwoMapFragment extends MapFragment {
     }
 
     @Override
-    @SuppressWarnings({"MissingPermission"})
     public void onStart() {
         super.onStart();
         mMapReadySignal = Single.<GoogleMap>fromEmitter(objectEmitter -> {
@@ -135,13 +127,6 @@ public class LwoMapFragment extends MapFragment {
                             new MyInfoWindowAdapter(LayoutInflater.from(getContext())));
                     mMap.moveCamera(CameraUpdateFactory.zoomTo(13.0f));
                     mMap.moveCamera(CameraUpdateFactory.newLatLng(LAT_LNG_LEGIONOWO));
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && isAnyPermissionGranted(
-                            new String[]{
-                                    Manifest.permission.ACCESS_FINE_LOCATION,
-                                    Manifest.permission.ACCESS_COARSE_LOCATION})) {
-                        mMap.setMyLocationEnabled(true);
-                    } else
-                        mMap.setMyLocationEnabled(false);
                 }));
 
         mSubscriptions.add(
@@ -166,8 +151,7 @@ public class LwoMapFragment extends MapFragment {
 
     @Override
     public void onDestroy() {
-        if (mSubscriptions!= null)
-            mSubscriptions.clear();
+        mSubscriptions.clear();
         super.onDestroy();
     }
 }

@@ -13,8 +13,8 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class SmogApplication extends Application {
 
-    AirRetrofitService mAirRetrofitService;
-    LegionowoRetrofitService mLegionowoRetrofitService;
+    private AirRetrofitService mAirRetrofitService;
+    private LegionowoRetrofitService mLegionowoRetrofitService;
     private OkHttpClient mOkHttpClient;
 
     public static AirRetrofitService getAirRetrofitService(Context context) {

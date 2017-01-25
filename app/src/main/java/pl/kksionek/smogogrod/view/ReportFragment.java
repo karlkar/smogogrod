@@ -55,8 +55,11 @@ public class ReportFragment extends Fragment {
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_report, null);
+    public View onCreateView(
+            LayoutInflater inflater,
+            @Nullable ViewGroup container,
+            @Nullable Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_report, container, false);
 
         mReportNameTextView = (TextView) view.findViewById(R.id.report_name);
         mReportDescTextView = (TextView) view.findViewById(R.id.report_desc);
@@ -69,9 +72,11 @@ public class ReportFragment extends Fragment {
         mBtnReport.setOnClickListener(v -> {
 
             if (canRequestTakePicture()) {
-                CharSequence seq[] = {"Pamięć urządzenia", "Nowe zdjęcie"};
+                CharSequence seq[] = {
+                        getString(R.string.fragment_report_photo_memory),
+                        getString(R.string.fragment_report_photo_create)};
                 new AlertDialog.Builder(getActivity())
-                        .setTitle("Wybierz źródło")
+                        .setTitle(R.string.fragment_report_photo_source)
                         .setItems(seq, (dialog1, which) -> {
                             switch (which) {
                                 case 0:
@@ -200,7 +205,7 @@ public class ReportFragment extends Fragment {
     }
 
     private boolean validate() {
-        if (mReportNameTextView.getText().toString().isEmpty()
+        return !(mReportNameTextView.getText().toString().isEmpty()
                 || mReportDescTextView.getText().toString().isEmpty()
                 || mReportCityTextView.getText().toString().isEmpty()
                 || mReportStreetTextView.getText().toString().isEmpty()
@@ -208,9 +213,7 @@ public class ReportFragment extends Fragment {
                 || mReportReporterTextView.getText().toString().isEmpty()
                 || mReportEMailTextView.getText().toString().isEmpty()
                 || mImageUri == null
-                || mImageUri.toString().isEmpty())
-            return false;
-        return true;
+                || mImageUri.toString().isEmpty());
     }
 
     public void setImageData(Intent data) {
@@ -220,7 +223,7 @@ public class ReportFragment extends Fragment {
         mImage.setRotation(getOrientation(getActivity(), mImageUri));
     }
 
-    public static int getOrientation(Context context, Uri photoUri) {
+    private static int getOrientation(Context context, Uri photoUri) {
         /* it's on the external media. */
         Cursor cursor = context.getContentResolver().query(photoUri,
                 new String[]{MediaStore.Images.ImageColumns.ORIENTATION}, null, null, null);

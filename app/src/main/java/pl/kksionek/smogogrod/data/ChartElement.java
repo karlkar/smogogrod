@@ -6,19 +6,19 @@ import java.util.ArrayList;
 
 public class ChartElement {
     @SerializedName("key")
-    String mKey;
+    private String mKey;
 
     @SerializedName("values")
-    ArrayList<ArrayList<Double>> mChartValues;
+    private ArrayList<ArrayList<Double>> mChartValues;
 
     @SerializedName("color")
-    String mColor;
+    private String mColor;
 
     @SerializedName("unapproved")
-    boolean mUnapproved;
+    private boolean mUnapproved;
 
     @SerializedName("unit")
-    String mUnit;
+    private String mUnit;
 
     public String getKey() {
         return mKey;

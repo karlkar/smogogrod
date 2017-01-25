@@ -3,10 +3,10 @@ package pl.kksionek.smogogrod.data;
 import com.google.android.gms.maps.model.LatLng;
 
 public class MarkedPlace {
-    LatLng mPosition;
-    String mType;
-    String mTitle;
-    String mLabel;
+    private LatLng mPosition;
+    private String mType;
+    private String mTitle;
+    private String mLabel;
 
     public MarkedPlace(String latlng, String type, String title, String label) {
         String[] strings = latlng.split(",");

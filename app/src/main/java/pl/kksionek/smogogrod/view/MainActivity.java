@@ -2,6 +2,7 @@ package pl.kksionek.smogogrod.view;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.ShareCompat;
 import android.support.v4.view.GravityCompat;
@@ -18,8 +19,8 @@ public class MainActivity extends AppCompatActivity
 
     private static final String TAG = "MainActivity";
 
-    public static final int REQUEST_IMAGE_CAPTURE = 9876;
-    public static final int REQUEST_IMAGE_PICK = 6789;
+    private static final int REQUEST_IMAGE_CAPTURE = 9876;
+    private static final int REQUEST_IMAGE_PICK = 6789;
 
     private ReportFragment mReportFragment = null;
     private StatusFragment mStatusFragment = null;
@@ -72,7 +73,7 @@ public class MainActivity extends AppCompatActivity
 
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
-    public boolean onNavigationItemSelected(MenuItem item) {
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         int id = item.getItemId();
 
         //TODO: Reuse fragments

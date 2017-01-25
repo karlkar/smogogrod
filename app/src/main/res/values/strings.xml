@@ -1,11 +1,9 @@
 <resources>
-    <string name="app_name">Smogogrod</string>
+    <string name="app_name">Smogogród</string>
     <string name="title_activity_main">SmogoGród</string>
 
     <string name="navigation_drawer_open">Otwórz nawigator</string>
     <string name="navigation_drawer_close">Zamknij nawigator</string>
-
-    <string name="action_settings">Ustawienia</string>
 
     <string name="adapter_status_percentage">%1$.0f%%</string>
     <string name="fragment_status_connection_problem_message">Problem z połączeniem. Spróbuj ponownie później.</string>
@@ -18,4 +16,31 @@
     <string name="fragment_status_item_o3">Poziom O₃ względem normy:</string>
     <string name="fragment_status_item_co">Poziom CO względem normy:</string>
     <string name="fragment_status_item_c6h6">Poziom C₆H₆ względem normy:</string>
+    <string name="fragment_report_photo_memory">Pamięć urządzenia</string>
+    <string name="fragment_report_photo_create">Nowe zdjęcie</string>
+    <string name="fragment_report_photo_source">Wybierz źródło</string>
+    <string name="fragment_report_title_new_point">Nowy punkt</string>
+    <string name="fragment_report_name_on_map">Nazwa na mapie:</string>
+    <string name="fragment_report_name_on_map_hint">Nazwa na mapie</string>
+    <string name="fragment_report_desc_on_map">Opis na mapie:</string>
+    <string name="fragment_report_desc_on_map_hint">Opis</string>
+    <string name="fragment_report_location">Lokalizacja</string>
+    <string name="fragment_report_city">Miejscowość:</string>
+    <string name="fragment_report_city_hint">Miejscowość</string>
+    <string name="fragment_report_street">Ulica:</string>
+    <string name="fragment_report_street_hint">Ulica</string>
+    <string name="fragment_report_street_num">Numer budynku:</string>
+    <string name="fragment_report_street_num_hint">Numer</string>
+    <string name="fragment_report_reporter_title">Zgłaszający (będzie ukryte)</string>
+    <string name="fragment_report_reporter">Kto zgłasza:</string>
+    <string name="fragment_report_reporter_hint">Imię/nick:</string>
+    <string name="fragment_report_reporter_email">E-mail:</string>
+    <string name="fragment_report_reporter_email_hint">E-mail</string>
+    <string name="fragment_report_photo_title">Zdjęcie</string>
+    <string name="fragment_report_photo_button">Zdjęcie</string>
+    <string name="activity_main_drawer_title_air_state">Stan powietrza</string>
+    <string name="activity_main_drawer_title_map">Mapa</string>
+    <string name="activity_main_drawer_title_report">Zgłoś truciciela</string>
+    <string name="activity_main_drawer_title_society">Społeczność</string>
+    <string name="activity_main_drawer_title_share">Udostępnij</string>
 </resources>

@@ -50,8 +50,8 @@ public class StatusAdapter extends RecyclerView.Adapter<StatusViewHolder> {
             Locale.getDefault());
     private static final int ANIM_DURATION = 1000;
 
-    private ArrayList<Integer> mIdentifiers = new ArrayList<>();
-    private SparseArray<Pair<Station, StationDetails>> mStations = new SparseArray<>();
+    private final ArrayList<Integer> mIdentifiers = new ArrayList<>();
+    private final SparseArray<Pair<Station, StationDetails>> mStations = new SparseArray<>();
 
     public StatusAdapter() {
         setHasStableIds(true);
