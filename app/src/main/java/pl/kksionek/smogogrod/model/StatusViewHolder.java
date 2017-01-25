@@ -9,37 +9,37 @@ import android.widget.TextView;
 
 import pl.kksionek.smogogrod.R;
 
-public class StatusViewHolder extends RecyclerView.ViewHolder {
+class StatusViewHolder extends RecyclerView.ViewHolder {
 
-    public CardView cardView;
+    CardView cardView;
 
-    public TextView cardTitle;
-    public TextView timestamp;
-    public TextView pm10;
-    public TextView pm25;
-    public TextView no2;
-    public TextView so2;
-    public TextView o3;
-    public TextView co;
-    public TextView c6h6;
+    TextView cardTitle;
+    TextView timestamp;
+    TextView pm10;
+    TextView pm25;
+    TextView no2;
+    TextView so2;
+    TextView o3;
+    TextView co;
+    TextView c6h6;
 
-    public TableRow pm10_row;
-    public TableRow pm25_row;
-    public TableRow no2_row;
-    public TableRow so2_row;
-    public TableRow o3_row;
-    public TableRow co_row;
-    public TableRow c6h6_row;
+    TableRow pm10_row;
+    TableRow pm25_row;
+    TableRow no2_row;
+    TableRow so2_row;
+    TableRow o3_row;
+    TableRow co_row;
+    TableRow c6h6_row;
 
-    public ImageView pm10_image;
-    public ImageView pm25_image;
-    public ImageView no2_image;
-    public ImageView so2_image;
-    public ImageView o3_image;
-    public ImageView co_image;
-    public ImageView c6h6_image;
+    ImageView pm10_image;
+    ImageView pm25_image;
+    ImageView no2_image;
+    ImageView so2_image;
+    ImageView o3_image;
+    ImageView co_image;
+    ImageView c6h6_image;
 
-    public StatusViewHolder(View itemView) {
+    StatusViewHolder(View itemView) {
         super(itemView);
         cardView = (CardView) itemView.findViewById(R.id.card_view);
 

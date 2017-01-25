@@ -1,11 +1,15 @@
 package pl.kksionek.smogogrod.model;
 
+import android.animation.ArgbEvaluator;
 import android.animation.ValueAnimator;
 import android.content.Context;
 import android.graphics.Color;
 import android.support.annotation.DrawableRes;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.util.Pair;
+import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,7 +19,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Locale;
 
 import pl.kksionek.smogogrod.R;
@@ -24,6 +27,8 @@ import pl.kksionek.smogogrod.data.Station;
 import pl.kksionek.smogogrod.data.StationDetails;
 
 public class StatusAdapter extends RecyclerView.Adapter<StatusViewHolder> {
+
+    private static final String TAG = "StatusAdapter";
 
     private static final float sPM10Limit = 50.0f;
     private static final float sPM25Limit = 25.0f;
@@ -40,11 +45,17 @@ public class StatusAdapter extends RecyclerView.Adapter<StatusViewHolder> {
     private static final int sCardBackgroundColor4 = Color.rgb(255, 93, 93);
     private static final int sCardBackgroundColor5 = Color.rgb(206, 88, 88);
 
-    private static final SimpleDateFormat sDateFormatter = new SimpleDateFormat("dd-MM-yyyy HH:mm", Locale.getDefault());
+    private static final SimpleDateFormat sDateFormatter = new SimpleDateFormat(
+            "dd-MM-yyyy HH:mm",
+            Locale.getDefault());
     private static final int ANIM_DURATION = 1000;
 
     private ArrayList<Integer> mIdentifiers = new ArrayList<>();
-    private HashMap<Integer, Pair<Station, StationDetails>> mStations = new HashMap<>();
+    private SparseArray<Pair<Station, StationDetails>> mStations = new SparseArray<>();
+
+    public StatusAdapter() {
+        setHasStableIds(true);
+    }
 
     public void add(Pair<Station, StationDetails> station) {
         Pair<Station, StationDetails> pair = mStations.get(station.first.getStationId());
@@ -104,26 +115,7 @@ public class StatusAdapter extends RecyclerView.Adapter<StatusViewHolder> {
     public void onBindViewHolder(StatusViewHolder holder, int position) {
         Pair<Station, StationDetails> station = mStations.get(mIdentifiers.get(position));
 
-        switch (station.first.getAqIndex()) {
-            case 0:
-                holder.cardView.setCardBackgroundColor(sCardBackgroundColor0);
-                break;
-            case 1:
-                holder.cardView.setCardBackgroundColor(sCardBackgroundColor1);
-                break;
-            case 2:
-                holder.cardView.setCardBackgroundColor(sCardBackgroundColor2);
-                break;
-            case 3:
-                holder.cardView.setCardBackgroundColor(sCardBackgroundColor3);
-                break;
-            case 4:
-                holder.cardView.setCardBackgroundColor(sCardBackgroundColor4);
-                break;
-            case 5:
-                holder.cardView.setCardBackgroundColor(sCardBackgroundColor5);
-                break;
-        }
+        animateBackgroundColor(holder.cardView, getTargetColor(station.first.getAqIndex()));
 
         holder.cardTitle.setText(station.first.getStationName());
 
@@ -213,9 +205,54 @@ public class StatusAdapter extends RecyclerView.Adapter<StatusViewHolder> {
         }
     }
 
+    private int getTargetColor(int aqIndex) {
+        int targetColor = sCardBackgroundColor0;
+        switch (aqIndex) {
+            case 0:
+                targetColor = sCardBackgroundColor0;
+                break;
+            case 1:
+                targetColor = sCardBackgroundColor1;
+                break;
+            case 2:
+                targetColor = sCardBackgroundColor2;
+                break;
+            case 3:
+                targetColor = sCardBackgroundColor3;
+                break;
+            case 4:
+                targetColor = sCardBackgroundColor4;
+                break;
+            case 5:
+                targetColor = sCardBackgroundColor5;
+                break;
+        }
+        return targetColor;
+    }
+
+    private void animateBackgroundColor(CardView cardView, int targetColor) {
+        Log.d(TAG, "animateBackgroundColor: " + cardView.getCardBackgroundColor().getDefaultColor() + ", target = " + targetColor);
+        if (cardView.getCardBackgroundColor().getDefaultColor() != targetColor) {
+            ValueAnimator valueAnimator = ValueAnimator.ofObject(
+                    new ArgbEvaluator(),
+                    cardView.getCardBackgroundColor().getDefaultColor(),
+                    targetColor);
+            valueAnimator.setDuration(ANIM_DURATION);
+            valueAnimator.addUpdateListener(
+                    animation -> cardView.setCardBackgroundColor(
+                            (int) animation.getAnimatedValue()));
+            valueAnimator.start();
+        }
+    }
+
     @Override
     public int getItemCount() {
         return mIdentifiers.size();
+    }
+
+    @Override
+    public long getItemId(int position) {
+        return mIdentifiers.get(position);
     }
 
     public boolean isRemovable(int adapterPosition) {

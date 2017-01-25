@@ -55,7 +55,6 @@ public class StatusFragment extends Fragment {
     private Gson mGson;
     private ArrayList<Pair<String, Integer>> mAvailableStations;
     private Lock mAvailableStationsLock = new ReentrantLock();
-    private FloatingActionButton mFloatingActionButton;
     private SortedSet<Integer> mFilterConditions = new TreeSet<>();
 
     @Override
@@ -78,9 +77,11 @@ public class StatusFragment extends Fragment {
             LayoutInflater inflater,
             @Nullable ViewGroup container,
             @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_status, null);
+        View view = inflater.inflate(R.layout.fragment_status, container, false);
 
         mSwipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.fragment_status_swipe_layout);
+        int mDistanceToTriggerSync = (int) (getResources().getDisplayMetrics().heightPixels * 0.3f);
+        mSwipeRefreshLayout.setDistanceToTriggerSync(mDistanceToTriggerSync);
 
         mRecyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
         ItemTouchHelper.Callback cb = new ItemTouchHelper.Callback() {
@@ -110,7 +111,6 @@ public class StatusFragment extends Fragment {
         helper.attachToRecyclerView(mRecyclerView);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         if (mStatusAdapter == null) {
-            Log.d(TAG, "onCreateView: ");
             mStatusAdapter = new StatusAdapter();
             mRecyclerView.setAdapter(mStatusAdapter);
             mSwipeRefreshLayout.setRefreshing(true);
@@ -120,8 +120,8 @@ public class StatusFragment extends Fragment {
 
         mSwipeRefreshLayout.setOnRefreshListener(() -> refreshData(false));
 
-        mFloatingActionButton = (FloatingActionButton) view.findViewById(R.id.fragment_status_fab);
-        mFloatingActionButton.setOnClickListener(v -> {
+        FloatingActionButton floatingActionButton = (FloatingActionButton) view.findViewById(R.id.fragment_status_fab);
+        floatingActionButton.setOnClickListener(v -> {
             mAvailableStationsLock.lock();
             if (mAvailableStations == null) {
                 Log.d(TAG, "onCreateView: No available stations");
