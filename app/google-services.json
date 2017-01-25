@@ -1,0 +1,63 @@
+{
+  "project_info": {
+    "project_number": "1088608859557",
+    "firebase_url": "https://smogogrod.firebaseio.com",
+    "project_id": "smogogrod",
+    "storage_bucket": "smogogrod.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1088608859557:android:d03e38d6ab1085e0",
+        "android_client_info": {
+          "package_name": "pl.kksionek.smogogrod"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1088608859557-qethothl59c9jl1llqj7vsed850qtb0s.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "pl.kksionek.smogogrod",
+            "certificate_hash": "A9F574F57DEE97AC389E2DBE68A1A6873E416502"
+          }
+        },
+        {
+          "client_id": "1088608859557-s7lj282chfdrth46o6ualr2r3ji04ufu.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "pl.kksionek.smogogrod",
+            "certificate_hash": "1F9779474E7E9842D263D3F48A0E10675334682F"
+          }
+        },
+        {
+          "client_id": "1088608859557-g9p66ikrd2j0msl0d0nimrn7a9685bif.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAdjtGRVhRih6iaGq7suw6OKttop2sXVTI"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1088608859557-g9p66ikrd2j0msl0d0nimrn7a9685bif.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

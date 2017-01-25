@@ -56,9 +56,11 @@ dependencies {
     compile "com.squareup.retrofit2:retrofit:$retrofitLib"
     compile "com.squareup.retrofit2:converter-gson:$retrofitLib"
     compile "com.squareup.retrofit2:adapter-rxjava:$retrofitLib"
-    compile 'io.reactivex:rxjava:1.2.5'
-    compile 'io.reactivex:rxandroid:1.2.1'
     compile "com.squareup.okhttp3:okhttp:$okHttpLib"
     compile "com.squareup.okhttp3:logging-interceptor:$okHttpLib"
+    compile 'io.reactivex:rxjava:1.2.5'
+    compile 'io.reactivex:rxandroid:1.2.1'
+    compile "com.google.firebase:firebase-ads:$playServicesLib"
     testCompile 'junit:junit:4.12'
 }
+apply plugin: 'com.google.gms.google-services'

@@ -11,6 +11,11 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+import android.view.View;
+
+import com.google.android.gms.ads.AdListener;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
 
 import pl.kksionek.smogogrod.R;
 
@@ -53,6 +58,20 @@ public class MainActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
         navigationView.setCheckedItem(mCheckedItem);
+
+        AdView adView = (AdView) findViewById(R.id.ad_view);
+        AdRequest adRequest = new AdRequest.Builder()
+                .addTestDevice(getString(R.string.adMobTestDeviceS7))
+                .addTestDevice(getString(R.string.adMobTestDeviceS5))
+                .build();
+        adView.setAdListener(new AdListener() {
+            @Override
+            public void onAdLoaded() {
+                adView.setAdListener(null);
+                adView.setVisibility(View.VISIBLE);
+            }
+        });
+        adView.loadAd(adRequest);
     }
 
     @Override
