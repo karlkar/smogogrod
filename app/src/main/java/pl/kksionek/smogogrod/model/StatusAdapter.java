@@ -149,55 +149,43 @@ public class StatusAdapter extends RecyclerView.Adapter<StatusViewHolder> {
         @DrawableRes int drawable;
 
         for (ChartElement element : station.second.getChartElements()) {
+            drawable = (element.getPreLastValue() < element.getLastValue()) ?
+                    R.drawable.ic_increase_negative : R.drawable.ic_decrease_positive;
             switch (element.getKey()) {
                 case "PM10": {
                     animateIfNeeded(element, sPM10Limit, holder.pm10);
-                    drawable = (element.getPreLastValue() > element.getLastValue()) ?
-                            R.drawable.ic_increase_negative : R.drawable.ic_decrease_positive;
                     holder.pm10_image.setImageResource(drawable);
                     holder.pm10_row.setVisibility(View.VISIBLE);
                     break;
                 }
                 case "PM2.5": {
                     animateIfNeeded(element, sPM25Limit, holder.pm25);
-                    drawable = (element.getPreLastValue() > element.getLastValue()) ?
-                            R.drawable.ic_increase_negative : R.drawable.ic_decrease_positive;
                     holder.pm25_image.setImageResource(drawable);
                     holder.pm25_row.setVisibility(View.VISIBLE);
                     break;
                 }
                 case "NO2":
                     animateIfNeeded(element, sNO2Limit, holder.no2);
-                    drawable = (element.getPreLastValue() > element.getLastValue()) ?
-                            R.drawable.ic_increase_negative : R.drawable.ic_decrease_positive;
                     holder.no2_image.setImageResource(drawable);
                     holder.no2_row.setVisibility(View.VISIBLE);
                     break;
                 case "SO2":
                     animateIfNeeded(element, sSO2Limit, holder.so2);
-                    drawable = (element.getPreLastValue() > element.getLastValue()) ?
-                            R.drawable.ic_increase_negative : R.drawable.ic_decrease_positive;
                     holder.so2_image.setImageResource(drawable);
                     holder.so2_row.setVisibility(View.VISIBLE);
                     break;
                 case "O3":
                     animateIfNeeded(element, sO3Limit, holder.o3);
-                    drawable = (element.getPreLastValue() > element.getLastValue()) ?
-                            R.drawable.ic_increase_negative : R.drawable.ic_decrease_positive;
                     holder.o3_image.setImageResource(drawable);
                     holder.o3_row.setVisibility(View.VISIBLE);
                     break;
                 case "C6H6":
                     animateIfNeeded(element, sC6H6Limit, holder.c6h6);
-                    drawable = (element.getPreLastValue() > element.getLastValue()) ?
-                            R.drawable.ic_increase_negative : R.drawable.ic_decrease_positive;
                     holder.c6h6_image.setImageResource(drawable);
                     holder.c6h6_row.setVisibility(View.VISIBLE);
                     break;
                 case "CO":
                     animateIfNeeded(element, sCOLimit, holder.co);
-                    drawable = (element.getPreLastValue() > element.getLastValue()) ?
-                            R.drawable.ic_increase_negative : R.drawable.ic_decrease_positive;
                     holder.co_image.setImageResource(drawable);
                     holder.co_row.setVisibility(View.VISIBLE);
                     break;
