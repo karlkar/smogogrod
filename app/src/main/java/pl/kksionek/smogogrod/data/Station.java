@@ -15,6 +15,8 @@ public class Station {
     @SerializedName("values")
     private Values mValues;
 
+    private boolean mNewData = true;
+
     public int getStationId() {
         return mStationId;
     }
@@ -25,5 +27,13 @@ public class Station {
 
     public int getAqIndex() {
         return mAqIndex;
+    }
+
+    public boolean isNewData() {
+        return mNewData;
+    }
+
+    public void markDataAsOld() {
+        mNewData = false;
     }
 }

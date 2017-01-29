@@ -87,56 +87,15 @@ public class StatusAdapter extends RecyclerView.Adapter<StatusViewHolder> {
         return new StatusViewHolder(itemView);
     }
 
-    private void animateIfNeeded(ChartElement element, float limit, TextView view) {
-        float newValue = (element.getLastValue() / limit) * 100.0f;
-        Context context = view.getContext();
-        CharSequence prevText = view.getText();
-        if (!prevText.equals(context.getString(
-                R.string.adapter_status_percentage,
-                newValue))) {
-            ValueAnimator animator = new ValueAnimator();
-            animator.setDuration(ANIM_DURATION);
-            float prevVal;
-            try {
-                prevVal = Float.parseFloat(prevText.toString().substring(0, prevText.length() - 1));
-            } catch (NumberFormatException | StringIndexOutOfBoundsException ex) {
-                prevVal = 0;
-            }
-            animator.setObjectValues(prevVal, newValue);
-            animator.addUpdateListener(animation -> view.setText(
-                    context.getString(
-                            R.string.adapter_status_percentage,
-                            (float) animation.getAnimatedValue())));
-            animator.start();
-        }
-    }
-
     @Override
     public void onBindViewHolder(StatusViewHolder holder, int position) {
         Pair<Station, StationDetails> station = mStations.get(mIdentifiers.get(position));
 
-        animateBackgroundColor(holder.cardView, getTargetColor(station.first.getAqIndex()));
+        setCardBackground(holder.cardView, station.first);
 
         holder.cardTitle.setText(station.first.getStationName());
 
-        if (!holder.timestamp.getText().toString().isEmpty()) {
-            try {
-                Date date = sDateFormatter.parse(holder.timestamp.getText().toString());
-                ValueAnimator animator = ValueAnimator.ofFloat(0.0f, 1.0f);
-                animator.setDuration(ANIM_DURATION);
-                long diff = station.second.getLastTimestamp() - date.getTime();
-                animator.addUpdateListener(
-                        animation -> holder.timestamp.setText(
-                                sDateFormatter.format(
-                                        date.getTime()
-                                                + (long) (diff * (float) animation.getAnimatedValue()))));
-                animator.start();
-            } catch (ParseException e) {
-                holder.timestamp.setText(sDateFormatter.format(station.second.getLastTimestamp()));
-                e.printStackTrace();
-            }
-        } else
-            holder.timestamp.setText(sDateFormatter.format(station.second.getLastTimestamp()));
+        setTimestamp(holder.timestamp, station.first, station.second);
 
         holder.pm10_row.setVisibility(View.GONE);
         holder.pm25_row.setVisibility(View.GONE);
@@ -149,48 +108,50 @@ public class StatusAdapter extends RecyclerView.Adapter<StatusViewHolder> {
         @DrawableRes int drawable;
 
         for (ChartElement element : station.second.getChartElements()) {
-            drawable = (element.getPreLastValue() < element.getLastValue()) ?
+            float lastVal = element.getLastValue();
+            drawable = (element.getPreLastValue() < lastVal) ?
                     R.drawable.ic_increase_negative : R.drawable.ic_decrease_positive;
             switch (element.getKey()) {
                 case "PM10": {
-                    animateIfNeeded(element, sPM10Limit, holder.pm10);
+                    setFieldText(holder.pm10, station.first, lastVal, sPM10Limit);
                     holder.pm10_image.setImageResource(drawable);
                     holder.pm10_row.setVisibility(View.VISIBLE);
                     break;
                 }
                 case "PM2.5": {
-                    animateIfNeeded(element, sPM25Limit, holder.pm25);
+                    setFieldText(holder.pm25, station.first, lastVal, sPM25Limit);
                     holder.pm25_image.setImageResource(drawable);
                     holder.pm25_row.setVisibility(View.VISIBLE);
                     break;
                 }
                 case "NO2":
-                    animateIfNeeded(element, sNO2Limit, holder.no2);
+                    setFieldText(holder.no2, station.first, lastVal, sNO2Limit);
                     holder.no2_image.setImageResource(drawable);
                     holder.no2_row.setVisibility(View.VISIBLE);
                     break;
                 case "SO2":
-                    animateIfNeeded(element, sSO2Limit, holder.so2);
+                    setFieldText(holder.so2, station.first, lastVal, sSO2Limit);
                     holder.so2_image.setImageResource(drawable);
                     holder.so2_row.setVisibility(View.VISIBLE);
                     break;
                 case "O3":
-                    animateIfNeeded(element, sO3Limit, holder.o3);
+                    setFieldText(holder.o3, station.first, lastVal, sO3Limit);
                     holder.o3_image.setImageResource(drawable);
                     holder.o3_row.setVisibility(View.VISIBLE);
                     break;
                 case "C6H6":
-                    animateIfNeeded(element, sC6H6Limit, holder.c6h6);
+                    setFieldText(holder.c6h6, station.first, lastVal, sC6H6Limit);
                     holder.c6h6_image.setImageResource(drawable);
                     holder.c6h6_row.setVisibility(View.VISIBLE);
                     break;
                 case "CO":
-                    animateIfNeeded(element, sCOLimit, holder.co);
+                    setFieldText(holder.co, station.first, lastVal, sCOLimit);
                     holder.co_image.setImageResource(drawable);
                     holder.co_row.setVisibility(View.VISIBLE);
                     break;
             }
         }
+        station.first.markDataAsOld();
     }
 
     private int getTargetColor(int aqIndex) {
@@ -218,9 +179,10 @@ public class StatusAdapter extends RecyclerView.Adapter<StatusViewHolder> {
         return targetColor;
     }
 
-    private void animateBackgroundColor(CardView cardView, int targetColor) {
-        Log.d(TAG, "animateBackgroundColor: " + cardView.getCardBackgroundColor().getDefaultColor() + ", target = " + targetColor);
-        if (cardView.getCardBackgroundColor().getDefaultColor() != targetColor) {
+    private void setCardBackground(CardView cardView, Station station) {
+        int targetColor = getTargetColor(station.getAqIndex());
+        if (station.isNewData()) {
+            Log.d(TAG, "setCardBackground: " + cardView.getCardBackgroundColor().getDefaultColor() + ", target = " + targetColor);
             ValueAnimator valueAnimator = ValueAnimator.ofObject(
                     new ArgbEvaluator(),
                     cardView.getCardBackgroundColor().getDefaultColor(),
@@ -230,6 +192,52 @@ public class StatusAdapter extends RecyclerView.Adapter<StatusViewHolder> {
                     animation -> cardView.setCardBackgroundColor(
                             (int) animation.getAnimatedValue()));
             valueAnimator.start();
+        } else
+            cardView.setCardBackgroundColor(targetColor);
+    }
+
+    private void setTimestamp(TextView timestamp, Station station, StationDetails stationDetails) {
+        if (station.isNewData()) {
+            try {
+                Date date = sDateFormatter.parse(timestamp.getText().toString());
+                ValueAnimator animator = ValueAnimator.ofFloat(0.0f, 1.0f);
+                animator.setDuration(ANIM_DURATION);
+                long diff = stationDetails.getLastTimestamp() - date.getTime();
+                animator.addUpdateListener(
+                        animation -> timestamp.setText(
+                                sDateFormatter.format(
+                                        date.getTime()
+                                                + (long) (diff * (float) animation.getAnimatedValue()))));
+                animator.start();
+            } catch (ParseException e) {
+                timestamp.setText(sDateFormatter.format(stationDetails.getLastTimestamp()));
+                e.printStackTrace();
+            }
+        } else
+            timestamp.setText(sDateFormatter.format(stationDetails.getLastTimestamp()));
+    }
+
+    private void setFieldText(TextView field, Station station, float lastValue, float limit) {
+        float newValue = (lastValue / limit) * 100.0f;
+        Context context = field.getContext();
+        if (station.isNewData()) {
+            CharSequence prevText = field.getText();
+            ValueAnimator animator = new ValueAnimator();
+            animator.setDuration(ANIM_DURATION);
+            float prevVal;
+            try {
+                prevVal = Float.parseFloat(prevText.toString().substring(0, prevText.length() - 1));
+            } catch (NumberFormatException | StringIndexOutOfBoundsException ex) {
+                prevVal = 0;
+            }
+            animator.setObjectValues(prevVal, newValue);
+            animator.addUpdateListener(animation -> field.setText(
+                    context.getString(
+                            R.string.adapter_status_percentage,
+                            (float) animation.getAnimatedValue())));
+            animator.start();
+        } else {
+            field.setText(context.getString(R.string.adapter_status_percentage, newValue));
         }
     }
 
