@@ -128,11 +128,11 @@ public class ReportFragment extends Fragment {
                                     throwable.printStackTrace();
                                     Toast.makeText(
                                             getActivity(),
-                                            "Problem z połączeniem. Spróbuj ponownie.",
+                                            R.string.fragment_report_internet_problem_toast,
                                             Toast.LENGTH_SHORT).show();
                                 });
             } else {
-                Toast.makeText(getActivity(), "Wypełnij formularz", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(), R.string.fragment_report_fill_form_toast, Toast.LENGTH_SHORT).show();
             }
         });
         return view;

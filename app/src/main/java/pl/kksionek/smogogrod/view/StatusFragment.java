@@ -211,7 +211,7 @@ public class StatusFragment extends Fragment {
                         .doOnNext(this::save))
                 .onErrorResumeNext(throwable -> {
                     throwable.printStackTrace();
-                    return Observable.just(null);
+                    return null;
                 })
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(

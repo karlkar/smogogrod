@@ -48,4 +48,6 @@
     <string name="activity_main_drawer_title_report">Zgłoś truciciela</string>
     <string name="activity_main_drawer_title_society">Społeczność</string>
     <string name="activity_main_drawer_title_share">Udostępnij</string>
+    <string name="fragment_report_internet_problem_toast">Problem z połączeniem. Spróbuj ponownie.</string>
+    <string name="fragment_report_fill_form_toast">Wypełnij formularz</string>
 </resources>
