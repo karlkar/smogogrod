@@ -141,16 +141,29 @@ public class StatusFragment extends Fragment {
                     optionStrings.add(station.first);
                 }
             }
+            boolean checkedItems[] = new boolean[optionStrings.size()];
             new AlertDialog.Builder(getActivity())
-                    .setItems(optionStrings.toArray(new String[0]), (dialog, which) -> {
-                        addNewFilter(options.get(which));
-                        mSwipeRefreshLayout.setRefreshing(true);
-                        refreshData(false);
-                        dialog.dismiss();
-                    })
+                    .setMultiChoiceItems(
+                            optionStrings.toArray(new String[0]),
+                            checkedItems,
+                            (dialog, which, isChecked) -> {})
                     .setTitle(R.string.fragment_status_add_station)
                     .setOnDismissListener(dialog -> mAvailableStationsLock.unlock())
                     .setNegativeButton(android.R.string.cancel, (dialog, which) -> dialog.dismiss())
+                    .setPositiveButton(android.R.string.ok, (dialog, which) -> {
+                        boolean added = false;
+                        for (int i = 0; i < checkedItems.length; ++i) {
+                            if (checkedItems[i]) {
+                                addNewFilter(options.get(i));
+                                added = true;
+                            }
+                        }
+                        if (added) {
+                            mSwipeRefreshLayout.setRefreshing(true);
+                            refreshData(false);
+                        }
+                        dialog.dismiss();
+                    })
                     .show();
         });
 
