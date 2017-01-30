@@ -118,9 +118,9 @@ public class MainActivity extends AppCompatActivity
         } else if (id == R.id.menu_item_share) {
             ShareCompat.IntentBuilder
                     .from(this)
-                    .setText("Aktywnie walczę ze smogiem! Pomaga mi w tym aplikacja Smogogród.")
+                    .setText(getString(R.string.activity_main_share_text))
                     .setType("text/plain")
-                    .setChooserTitle("Udostępnianie")
+                    .setChooserTitle(R.string.activity_main_sharing)
                     .startChooser();
         }
 
