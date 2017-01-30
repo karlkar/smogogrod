@@ -39,7 +39,7 @@ android {
     }
 }
 
-def supportLib = "25.1.0";
+def supportLib = "25.1.1";
 def okHttpLib = "3.5.0";
 def retrofitLib = "2.1.0";
 def playServicesLib = "10.0.1";

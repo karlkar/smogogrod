@@ -1,42 +1,44 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
     <TextView
         android:id="@+id/text_new_point"
-        android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:gravity="center"
         android:paddingLeft="10dp"
         android:paddingRight="10dp"
-        android:gravity="center"
-        android:text="@string/fragment_report_title_new_point"/>
+        android:text="@string/fragment_report_title_new_point"
+        android:textAppearance="@style/Base.TextAppearance.AppCompat.Large" />
 
     <android.support.design.widget.FloatingActionButton
-            android:id="@+id/fab"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentRight="true"
-            android:layout_margin="@dimen/fab_margin"
-            app:srcCompat="@drawable/ic_menu_send" />
+        android:id="@+id/fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_margin="@dimen/fab_margin"
+        app:elevation="6dp"
+        app:pressedTranslationZ="12dp"
+        app:srcCompat="@drawable/ic_menu_send" />
 
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
         android:layout_below="@id/text_new_point"
         android:paddingLeft="10dp"
-        android:paddingRight="10dp"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true">
+        android:paddingRight="10dp">
 
         <TableLayout
-            android:stretchColumns="*"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:stretchColumns="*">
 
             <TableRow
                 android:layout_width="match_parent"
@@ -45,16 +47,16 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:singleLine="true"
                     android:maxLines="1"
-                    android:text="@string/fragment_report_name_on_map"/>
+                    android:singleLine="true"
+                    android:text="@string/fragment_report_name_on_map" />
 
                 <EditText
                     android:id="@+id/report_name"
-                    android:inputType="text"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:hint="@string/fragment_report_name_on_map_hint"/>
+                    android:hint="@string/fragment_report_name_on_map_hint"
+                    android:inputType="text" />
 
             </TableRow>
 
@@ -65,16 +67,16 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:singleLine="true"
                     android:maxLines="1"
-                    android:text="@string/fragment_report_desc_on_map"/>
+                    android:singleLine="true"
+                    android:text="@string/fragment_report_desc_on_map" />
 
                 <EditText
                     android:id="@+id/report_desc"
-                    android:inputType="text"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:hint="@string/fragment_report_desc_on_map_hint"/>
+                    android:hint="@string/fragment_report_desc_on_map_hint"
+                    android:inputType="text" />
 
             </TableRow>
 
@@ -83,13 +85,14 @@
                 android:layout_height="wrap_content">
 
                 <TextView
-                    android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:layout_span="2"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/fragment_report_location"/>
+                    android:text="@string/fragment_report_location"
+                    android:textAppearance="@style/Base.TextAppearance.AppCompat.Large" />
 
             </TableRow>
+
             <TableRow
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
@@ -97,18 +100,19 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:singleLine="true"
                     android:maxLines="1"
-                    android:text="@string/fragment_report_city"/>
+                    android:singleLine="true"
+                    android:text="@string/fragment_report_city" />
 
                 <EditText
                     android:id="@+id/report_city"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:inputType="textPostalAddress"
-                    android:hint="@string/fragment_report_city_hint"/>
+                    android:hint="@string/fragment_report_city_hint"
+                    android:inputType="textPostalAddress" />
 
             </TableRow>
+
             <TableRow
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
@@ -116,18 +120,19 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:singleLine="true"
                     android:maxLines="1"
-                    android:text="@string/fragment_report_street"/>
+                    android:singleLine="true"
+                    android:text="@string/fragment_report_street" />
 
                 <EditText
                     android:id="@+id/report_street"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:inputType="textPostalAddress"
-                    android:hint="@string/fragment_report_street_hint"/>
+                    android:hint="@string/fragment_report_street_hint"
+                    android:inputType="textPostalAddress" />
 
             </TableRow>
+
             <TableRow
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
@@ -135,16 +140,16 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:singleLine="true"
                     android:maxLines="1"
-                    android:text="@string/fragment_report_street_num"/>
+                    android:singleLine="true"
+                    android:text="@string/fragment_report_street_num" />
 
                 <EditText
                     android:id="@+id/report_number"
-                    android:inputType="number"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:hint="@string/fragment_report_street_num_hint"/>
+                    android:hint="@string/fragment_report_street_num_hint"
+                    android:inputType="number" />
 
             </TableRow>
 
@@ -153,13 +158,14 @@
                 android:layout_height="wrap_content">
 
                 <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:layout_span="2"
-                    android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/fragment_report_reporter_title"/>
+                    android:text="@string/fragment_report_reporter_title"
+                    android:textAppearance="@style/Base.TextAppearance.AppCompat.Large" />
 
             </TableRow>
+
             <TableRow
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
@@ -167,18 +173,19 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:singleLine="true"
                     android:maxLines="1"
-                    android:text="@string/fragment_report_reporter"/>
+                    android:singleLine="true"
+                    android:text="@string/fragment_report_reporter" />
 
                 <EditText
                     android:id="@+id/report_reporter"
-                    android:inputType="textPersonName"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:hint="@string/fragment_report_reporter_hint"/>
+                    android:hint="@string/fragment_report_reporter_hint"
+                    android:inputType="textPersonName" />
 
             </TableRow>
+
             <TableRow
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
@@ -186,16 +193,16 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:singleLine="true"
                     android:maxLines="1"
-                    android:text="@string/fragment_report_reporter_email"/>
+                    android:singleLine="true"
+                    android:text="@string/fragment_report_reporter_email" />
 
                 <EditText
                     android:id="@+id/report_email"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:inputType="textEmailAddress"
-                    android:hint="@string/fragment_report_reporter_email_hint"/>
+                    android:hint="@string/fragment_report_reporter_email_hint"
+                    android:inputType="textEmailAddress" />
 
             </TableRow>
 
@@ -204,13 +211,14 @@
                 android:layout_height="wrap_content">
 
                 <TextView
-                    android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
-                    android:layout_span="2"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/fragment_report_photo_title"/>
+                    android:layout_span="2"
+                    android:text="@string/fragment_report_photo_title"
+                    android:textAppearance="@style/Base.TextAppearance.AppCompat.Large" />
 
             </TableRow>
+
             <TableRow
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -220,9 +228,9 @@
                     android:id="@+id/report_button"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:singleLine="true"
                     android:maxLines="1"
-                    android:text="@string/fragment_report_photo_button"/>
+                    android:singleLine="true"
+                    android:text="@string/fragment_report_photo_button" />
 
                 <ImageView
                     android:id="@+id/report_image"
@@ -238,9 +246,9 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="#8c000000"
-        android:gravity="center"
         android:clickable="true"
         android:focusable="true"
+        android:gravity="center"
         android:visibility="gone">
 
         <ProgressBar

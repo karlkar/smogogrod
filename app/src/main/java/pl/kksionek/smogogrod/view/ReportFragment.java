@@ -13,9 +13,12 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -68,6 +71,14 @@ public class ReportFragment extends Fragment {
         mReportStreetNumberTextView = (TextView) view.findViewById(R.id.report_number);
         mReportReporterTextView = (TextView) view.findViewById(R.id.report_reporter);
         mReportEMailTextView = (TextView) view.findViewById(R.id.report_email);
+        mReportEMailTextView.setOnEditorActionListener((v, actionId, event) -> {
+            if (actionId == EditorInfo.IME_ACTION_NEXT) {
+                InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+                return true;
+            }
+            return false;
+        });
         mBtnReport = (Button) view.findViewById(R.id.report_button);
         mBtnReport.setOnClickListener(v -> {
 
@@ -122,6 +133,10 @@ public class ReportFragment extends Fragment {
                                 responseBody -> {
                                     showProgressOverlay(false);
                                     clearForm();
+                                    Toast.makeText(
+                                            getActivity(),
+                                            R.string.fragment_report_success,
+                                            Toast.LENGTH_SHORT).show();
                                 },
                                 throwable -> {
                                     showProgressOverlay(false);
@@ -156,6 +171,8 @@ public class ReportFragment extends Fragment {
         mReportCityTextView.setText("");
         mReportStreetTextView.setText("");
         mReportStreetNumberTextView.setText("");
+        mImageUri = null;
+        mImage.setVisibility(View.GONE);
     }
 
     private void saveUserData() {
@@ -217,6 +234,7 @@ public class ReportFragment extends Fragment {
     }
 
     public void setImageData(Intent data) {
+        mImage.setVisibility(View.VISIBLE);
         mImageUri = data.getData();
         mImage.setImageURI(mImageUri);
 

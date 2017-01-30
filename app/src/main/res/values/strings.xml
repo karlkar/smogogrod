@@ -3,6 +3,7 @@
     <string name="banner_ad_unit_id">ca-app-pub-9982327151344679/9034618940</string>
     <string name="adMobTestDeviceS5">F0E0DF548AD32B9C9DF78977B9079AD2</string>
     <string name="adMobTestDeviceS7">3795279CABB4FAC75E5F23A086CC9C9F</string>
+    <string name="google_maps_key" templateMergeStrategy="preserve" translatable="false">AIzaSyC-FfgHXXCD07vcmsGBGmGkrxr-xAyftY4</string>
 
     <string name="app_name">Smogogród</string>
     <string name="title_activity_main">Smogogród</string>
@@ -49,5 +50,6 @@
     <string name="activity_main_drawer_title_society">Społeczność</string>
     <string name="activity_main_drawer_title_share">Udostępnij</string>
     <string name="fragment_report_internet_problem_toast">Problem z połączeniem. Spróbuj ponownie.</string>
+    <string name="fragment_report_success">Dane o punkcie wysłane na serwer!</string>
     <string name="fragment_report_fill_form_toast">Wypełnij formularz</string>
 </resources>

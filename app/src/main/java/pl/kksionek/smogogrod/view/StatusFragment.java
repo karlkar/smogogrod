@@ -20,9 +20,11 @@ import android.widget.Toast;
 
 import com.google.gson.Gson;
 
+import java.text.Collator;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.SortedSet;
@@ -45,6 +47,8 @@ public class StatusFragment extends Fragment {
 
     private static final String TAG = "StatusFragment";
     private static final String PREF_FILTER = "FILTER";
+
+    public static final Collator COLLATOR = Collator.getInstance(new Locale("pl", "PL"));
 
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private RecyclerView mRecyclerView;
@@ -254,7 +258,7 @@ public class StatusFragment extends Fragment {
                 name = name.substring(0, name.length() - 1);
             mAvailableStations.add(Pair.create(name, station.getStationId()));
         }
-        Collections.sort(mAvailableStations, (o1, o2) -> o1.first.compareTo(o2.first));
+        Collections.sort(mAvailableStations, (o1, o2) -> COLLATOR.compare(o1.first, o2.first));
         mAvailableStationsLock.unlock();
     }
 

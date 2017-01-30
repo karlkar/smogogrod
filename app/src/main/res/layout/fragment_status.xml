@@ -26,5 +26,7 @@
         android:layout_margin="@dimen/fab_margin"
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
+        app:elevation="6dp"
+        app:pressedTranslationZ="12dp"
         app:srcCompat="@drawable/ic_add_white_24dp" />
 </RelativeLayout>
