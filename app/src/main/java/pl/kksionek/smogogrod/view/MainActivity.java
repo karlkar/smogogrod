@@ -1,6 +1,7 @@
 package pl.kksionek.smogogrod.view;
 
 import android.content.Intent;
+import android.location.Location;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
@@ -59,10 +60,15 @@ public class MainActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
         navigationView.setCheckedItem(mCheckedItem);
 
+        Location loc = new Location("");
+        loc.setLatitude(LwoMapFragment.LWO_LATITUDE);
+        loc.setLongitude(LwoMapFragment.LWO_LONGITUDE);
+
         AdView adView = (AdView) findViewById(R.id.ad_view);
         AdRequest adRequest = new AdRequest.Builder()
                 .addTestDevice(getString(R.string.adMobTestDeviceS7))
                 .addTestDevice(getString(R.string.adMobTestDeviceS5))
+                .setLocation(loc)
                 .build();
         adView.setAdListener(new AdListener() {
             @Override

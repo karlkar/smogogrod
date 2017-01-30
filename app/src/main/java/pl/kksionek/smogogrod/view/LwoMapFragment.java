@@ -31,7 +31,9 @@ public class LwoMapFragment extends MapFragment {
 
     private static final String TAG = "MAPFRAGMENT";
 
-    private static final LatLng LAT_LNG_LEGIONOWO = new LatLng(52.3998006, 20.934969);
+    public static final double LWO_LATITUDE = 52.3998006;
+    public static final double LWO_LONGITUDE = 20.934969;
+    private static final LatLng LAT_LNG_LEGIONOWO = new LatLng(LWO_LATITUDE, LWO_LONGITUDE);
 
     private static BitmapDescriptor mBitmapDescriptorFactory = null;
     private static BitmapDescriptor mBitmapDescriptorRequest = null;
