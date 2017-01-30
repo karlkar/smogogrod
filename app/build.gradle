@@ -28,7 +28,7 @@ android {
     }
     buildTypes {
         release {
-            minifyEnabled false
+            minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             signingConfig signingConfigs.release
         }
@@ -58,9 +58,10 @@ dependencies {
     compile "com.squareup.retrofit2:adapter-rxjava:$retrofitLib"
     compile "com.squareup.okhttp3:okhttp:$okHttpLib"
     compile "com.squareup.okhttp3:logging-interceptor:$okHttpLib"
+    compile "com.google.firebase:firebase-ads:$playServicesLib"
+    releaseCompile "com.google.firebase:firebase-crash:$playServicesLib"
     compile 'io.reactivex:rxjava:1.2.5'
     compile 'io.reactivex:rxandroid:1.2.1'
-    compile "com.google.firebase:firebase-ads:$playServicesLib"
     testCompile 'junit:junit:4.12'
 }
 apply plugin: 'com.google.gms.google-services'
