@@ -149,7 +149,9 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void setImageData(Intent data) {
-        mReportFragment.setImageData(data);
+        if (mReportFragment != null) {
+            mReportFragment.setImageData(data);
+        }
     }
 
     @Override

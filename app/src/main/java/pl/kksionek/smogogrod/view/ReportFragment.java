@@ -4,7 +4,6 @@ import android.animation.Animator;
 import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
-import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -13,7 +12,6 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,6 +21,8 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.bumptech.glide.Glide;
 
 import pl.kksionek.smogogrod.R;
 import pl.kksionek.smogogrod.model.Network;
@@ -234,27 +234,11 @@ public class ReportFragment extends Fragment {
     }
 
     public void setImageData(Intent data) {
-        mImage.setVisibility(View.VISIBLE);
         mImageUri = data.getData();
-        mImage.setImageURI(mImageUri);
-
-        mImage.setRotation(getOrientation(getActivity(), mImageUri));
-    }
-
-    private static int getOrientation(Context context, Uri photoUri) {
-        /* it's on the external media. */
-        Cursor cursor = context.getContentResolver().query(photoUri,
-                new String[]{MediaStore.Images.ImageColumns.ORIENTATION}, null, null, null);
-
-        int result = -1;
-        if (null != cursor) {
-            if (cursor.moveToFirst()) {
-                result = cursor.getInt(0);
-            }
-            cursor.close();
-        }
-
-        return result;
+        mImage.setVisibility(View.VISIBLE);
+        Glide.with(this)
+                .load(mImageUri)
+                .into(mImage);
     }
 
     @Override

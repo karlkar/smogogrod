@@ -211,7 +211,6 @@ public class StatusAdapter extends RecyclerView.Adapter<StatusViewHolder> {
                 animator.start();
             } catch (ParseException e) {
                 timestamp.setText(sDateFormatter.format(stationDetails.getLastTimestamp()));
-                e.printStackTrace();
             }
         } else
             timestamp.setText(sDateFormatter.format(stationDetails.getLastTimestamp()));

@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -48,21 +49,44 @@ public class Network {
     private static final Pattern LABEL_PATTERN =
             Pattern.compile("label: '(.*?)'");
 
+    private static Observable<ArrayList<Station>> mObservable;
+    private static HashMap<Integer, Observable<StationDetails>> mObservableHashMap = new HashMap<>();
+
     private Network() {
     }
 
+    private static Observable<ArrayList<Station>> getStationsInner(@NonNull Context context) {
+        if (mObservable == null) {
+            mObservable = SmogApplication.getAirRetrofitService(context)
+                    .getStations("AQI")
+                    .replay(1)
+                    .autoConnect();
+        }
+        return mObservable;
+    }
+
     public static Observable<ArrayList<Station>> getStations(@NonNull Context context) {
-        return SmogApplication.getAirRetrofitService(context)
-                .getStations("AQI")
-                .subscribeOn(Schedulers.io());
+        return getStationsInner(context).subscribeOn(Schedulers.io());
+    }
+
+    private static Observable<StationDetails> getStationDetailsInner(@NonNull Context context, int id, int days) {
+        if (mObservableHashMap.containsKey(id)) {
+            return mObservableHashMap.get(id);
+        } else {
+            Observable<StationDetails> stationDetailsObservable = SmogApplication.getAirRetrofitService(context)
+                    .getStationDetails(days, id)
+                    .replay(1, 5, TimeUnit.MINUTES)
+                    .autoConnect();
+            mObservableHashMap.put(id, stationDetailsObservable);
+            return stationDetailsObservable;
+        }
     }
 
     public static Observable<StationDetails> getStationDetails(@NonNull Context context, int id) {
         int days = 1;
         if (Calendar.getInstance().get(Calendar.HOUR_OF_DAY) < 2)
             days = 2;
-        return SmogApplication.getAirRetrofitService(context)
-                .getStationDetails(days, id)
+        return getStationDetailsInner(context, id, days)
                 .subscribeOn(Schedulers.io());
     }
 

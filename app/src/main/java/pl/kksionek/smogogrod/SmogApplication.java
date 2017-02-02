@@ -3,6 +3,8 @@ package pl.kksionek.smogogrod;
 import android.app.Application;
 import android.content.Context;
 
+import java.util.concurrent.TimeUnit;
+
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 import pl.kksionek.smogogrod.data.AirRetrofitService;
@@ -33,11 +35,14 @@ public class SmogApplication extends Application {
     public void onCreate() {
         super.onCreate();
 
-        HttpLoggingInterceptor httpLoggingInterceptor = new HttpLoggingInterceptor();
-        httpLoggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BASIC);
+//        HttpLoggingInterceptor httpLoggingInterceptor = new HttpLoggingInterceptor();
+//        httpLoggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BASIC);
 
         mOkHttpClient = new OkHttpClient.Builder()
-                .addInterceptor(httpLoggingInterceptor)
+                .connectTimeout(1, TimeUnit.MINUTES)
+                .readTimeout(1, TimeUnit.MINUTES)
+                .writeTimeout(1, TimeUnit.MINUTES)
+//                .addInterceptor(httpLoggingInterceptor)
                 .build();
 
         GsonConverterFactory gsonConverterFactory = GsonConverterFactory.create();
