@@ -126,14 +126,14 @@ public class LwoMapFragment extends MapFragment {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe((googleMap) -> {
                     mMap.setInfoWindowAdapter(
-                            new MyInfoWindowAdapter(LayoutInflater.from(getContext())));
+                            new MyInfoWindowAdapter(LayoutInflater.from(getActivity())));
                     mMap.moveCamera(CameraUpdateFactory.zoomTo(13.0f));
                     mMap.moveCamera(CameraUpdateFactory.newLatLng(LAT_LNG_LEGIONOWO));
                 }));
 
         mSubscriptions.add(
                 Observable.zip(
-                        Network.getMarkedPlaces(getContext()),
+                        Network.getMarkedPlaces(getActivity()),
                         mMapReadySignal.toObservable(),
                         (markedPlaces, ignore) -> markedPlaces)
                         .observeOn(AndroidSchedulers.mainThread())
