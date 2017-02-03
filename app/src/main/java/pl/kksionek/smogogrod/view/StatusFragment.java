@@ -48,7 +48,7 @@ public class StatusFragment extends Fragment {
     private static final String TAG = "StatusFragment";
     private static final String PREF_FILTER = "FILTER";
 
-    public static final Collator COLLATOR = Collator.getInstance(new Locale("pl", "PL"));
+    private static final Collator COLLATOR = Collator.getInstance(new Locale("pl", "PL"));
 
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private RecyclerView mRecyclerView;

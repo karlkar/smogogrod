@@ -6,6 +6,7 @@ import android.net.Uri;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.util.SparseArray;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -50,7 +51,7 @@ public class Network {
             Pattern.compile("label: '(.*?)'");
 
     private static Observable<ArrayList<Station>> mObservable;
-    private static HashMap<Integer, Observable<StationDetails>> mObservableHashMap = new HashMap<>();
+    private static final SparseArray<Observable<StationDetails>> mObservableHashMap = new SparseArray<>();
 
     private Network() {
     }
@@ -70,7 +71,7 @@ public class Network {
     }
 
     private static Observable<StationDetails> getStationDetailsInner(@NonNull Context context, int id, int days) {
-        if (mObservableHashMap.containsKey(id)) {
+        if (mObservableHashMap.indexOfKey(id) >= 0) {
             return mObservableHashMap.get(id);
         } else {
             Observable<StationDetails> stationDetailsObservable = SmogApplication.getAirRetrofitService(context)

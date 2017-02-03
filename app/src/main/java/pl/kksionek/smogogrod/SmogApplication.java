@@ -6,7 +6,6 @@ import android.content.Context;
 import java.util.concurrent.TimeUnit;
 
 import okhttp3.OkHttpClient;
-import okhttp3.logging.HttpLoggingInterceptor;
 import pl.kksionek.smogogrod.data.AirRetrofitService;
 import pl.kksionek.smogogrod.data.LegionowoRetrofitService;
 import retrofit2.Retrofit;

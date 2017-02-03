@@ -55,4 +55,6 @@
     <string name="activity_main_share_text">Aktywnie walczę ze smogiem! Pomaga mi w tym aplikacja Smogogród. https://play.google.com/store/apps/details?id=pl.kksionek.smogogrod</string>
     <string name="activity_main_sharing">Udostępnianie</string>
     <string name="fragment_report_choose_picture">Wybierz zdjęcie</string>
+    <string name="nav_header_main_logo">Logo aplikacji</string>
+    <string name="fragment_report_photo_taken">Zrobione zdjęcie</string>
 </resources>
