@@ -27,6 +27,10 @@ public class MainActivity extends AppCompatActivity
 
     private static final int REQUEST_IMAGE_CAPTURE = 9876;
     private static final int REQUEST_IMAGE_PICK = 6789;
+    public static final String ACTIVE_FRAGMENT = "ACTIVE_FRAGMENT";
+    public static final String FRAG_TAG_REPORT = "REPORT";
+    public static final String FRAG_TAG_MAP = "MAP";
+    public static final String FRAG_TAG_STATUS = "STATUS";
 
     private ReportFragment mReportFragment = null;
     private StatusFragment mStatusFragment = null;
@@ -47,8 +51,11 @@ public class MainActivity extends AppCompatActivity
                     .beginTransaction()
                     .add(R.id.content_main, mStatusFragment)
                     .commit();
-        } else
-            mCheckedItem = savedInstanceState.getInt("active_fragment");
+        } else {
+            mCheckedItem = savedInstanceState.getInt(ACTIVE_FRAGMENT);
+            mReportFragment = (ReportFragment) getFragmentManager().findFragmentByTag(FRAG_TAG_REPORT);
+            mStatusFragment = (StatusFragment) getFragmentManager().findFragmentByTag(FRAG_TAG_STATUS);
+        }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -83,7 +90,7 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putInt("active_fragment", mCheckedItem);
+        outState.putInt(ACTIVE_FRAGMENT, mCheckedItem);
     }
 
     @Override
@@ -107,19 +114,19 @@ public class MainActivity extends AppCompatActivity
                 mReportFragment = new ReportFragment();
             getFragmentManager()
                     .beginTransaction()
-                    .replace(R.id.content_main, mReportFragment)
+                    .replace(R.id.content_main, mReportFragment, FRAG_TAG_REPORT)
                     .commit();
         } else if (id == R.id.menu_item_map) {
             getFragmentManager()
                     .beginTransaction()
-                    .replace(R.id.content_main, new LwoMapFragment())
+                    .replace(R.id.content_main, new LwoMapFragment(), FRAG_TAG_MAP)
                     .commit();
         } else if (id == R.id.menu_item_status) {
             if (mStatusFragment == null)
                 mStatusFragment = new StatusFragment();
             getFragmentManager()
                     .beginTransaction()
-                    .replace(R.id.content_main, mStatusFragment)
+                    .replace(R.id.content_main, mStatusFragment, FRAG_TAG_STATUS)
                     .commit();
         } else if (id == R.id.menu_item_share) {
             ShareCompat.IntentBuilder

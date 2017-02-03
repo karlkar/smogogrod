@@ -31,8 +31,11 @@ import rx.android.schedulers.AndroidSchedulers;
 
 public class ReportFragment extends Fragment {
 
-    private FloatingActionButton mFab;
-    private Subscription mSubscription;
+    private static final String TAG = "ReportFragment";
+
+    public static final String PREF_USERNAME = "PREF_USERNAME";
+    public static final String PREF_EMAIL = "PREF_EMAIL";
+    public static final String URI = "URI";
 
     public interface ReportFragmentListener {
         void onPicturePick(Intent data);
@@ -41,8 +44,6 @@ public class ReportFragment extends Fragment {
     }
 
     private ReportFragmentListener mReportFragmentListener = null;
-
-    private static final String TAG = "ReportFragment";
 
     private TextView mReportNameTextView;
     private TextView mReportDescTextView;
@@ -55,6 +56,9 @@ public class ReportFragment extends Fragment {
     private Uri mImageUri;
     private ImageView mImage;
     private View mOverlay;
+    private FloatingActionButton mFab;
+
+    private Subscription mSubscription;
 
     @Nullable
     @Override
@@ -108,9 +112,9 @@ public class ReportFragment extends Fragment {
         mOverlay = view.findViewById(R.id.fragment_report_progress_overlay);
 
         mReportReporterTextView.setText(PreferenceManager.getDefaultSharedPreferences(getActivity())
-                .getString("PREF_USERNAME", ""));
+                .getString(PREF_USERNAME, ""));
         mReportEMailTextView.setText(PreferenceManager.getDefaultSharedPreferences(getActivity())
-                .getString("PREF_EMAIL", ""));
+                .getString(PREF_EMAIL, ""));
 
         mFab = (FloatingActionButton) view.findViewById(R.id.fab);
         mFab.setOnClickListener(view1 -> {
@@ -150,6 +154,15 @@ public class ReportFragment extends Fragment {
                 Toast.makeText(getActivity(), R.string.fragment_report_fill_form_toast, Toast.LENGTH_SHORT).show();
             }
         });
+
+        if (savedInstanceState != null) {
+            mImageUri = savedInstanceState.getParcelable(URI);
+            mImage.setVisibility(View.VISIBLE);
+            Glide.with(this)
+                    .load(mImageUri)
+                    .into(mImage);
+        }
+
         return view;
     }
 
@@ -178,8 +191,8 @@ public class ReportFragment extends Fragment {
     private void saveUserData() {
         PreferenceManager.getDefaultSharedPreferences(getActivity())
                 .edit()
-                .putString("PREF_USERNAME", mReportReporterTextView.getText().toString())
-                .putString("PREF_EMAIL", mReportEMailTextView.getText().toString())
+                .putString(PREF_USERNAME, mReportReporterTextView.getText().toString())
+                .putString(PREF_EMAIL, mReportEMailTextView.getText().toString())
                 .apply();
     }
 
@@ -219,6 +232,12 @@ public class ReportFragment extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         mReportFragmentListener = (ReportFragmentListener) getActivity();
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putParcelable(URI, mImageUri);
     }
 
     private boolean validate() {
@@ -269,7 +288,7 @@ public class ReportFragment extends Fragment {
         Intent pickIntent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
         pickIntent.setType("image/*");
 
-        Intent chooserIntent = Intent.createChooser(getIntent, "Wybierz zdjęcie");
+        Intent chooserIntent = Intent.createChooser(getIntent, getString(R.string.fragment_report_choose_picture));
         chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, new Intent[]{pickIntent});
         mReportFragmentListener.onPicturePick(chooserIntent);
     }
